@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const ennuLayer         = document.getElementById("ennu-layer");
   const ennuSpacer        = document.getElementById("ennu-spacer");
-  const ennuPhotos        = document.querySelectorAll(".ennu-photo");
+  const ennuSlides        = document.querySelectorAll(".ennu-slide");
   const ennuYearLabel     = document.getElementById("ennu-year-label");
   const ENNU_YEARS        = [1961, 1998, 2010, 2017, 2021, 2025];
   const CURTAIN_PHASE     = 0.12;
@@ -69,13 +69,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const relScroll    = scrollTop - spacerTop;
     const sectionProg  = relScroll / spacerHeight;
 
+    // Voor de spacer: gordijn onderaan buiten beeld
     if (sectionProg < 0) {
       ennuLayer.style.transform = "translateY(100vh)";
       return;
     }
 
+    // Na de spacer: gordijn schuift omhoog zodat bronnen zichtbaar worden
     if (sectionProg >= 1) {
-      ennuLayer.style.transform = "translateY(0)";
+      const beyondScroll = scrollTop - (spacerTop + spacerHeight);
+      const exitProgress = Math.min(1, beyondScroll / window.innerHeight);
+      ennuLayer.style.transform = `translateY(${-exitProgress * 100}vh)`;
       return;
     }
 
@@ -88,14 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
       navDotsContainer.classList.remove("visible");
     }
 
-    // Fase 2: foto's wisselen
+    // Fase 2: slides wisselen
     if (sectionProg > CURTAIN_PHASE) {
       const photoProgress = (sectionProg - CURTAIN_PHASE) / (1 - CURTAIN_PHASE);
       const idx = Math.min(5, Math.floor(photoProgress * 6));
-      ennuPhotos.forEach((photo, i) => photo.classList.toggle("active", i === idx));
+      ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === idx));
       ennuYearLabel.textContent = ENNU_YEARS[idx];
     } else {
-      ennuPhotos.forEach((photo, i) => photo.classList.toggle("active", i === 0));
+      ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === 0));
       ennuYearLabel.textContent = ENNU_YEARS[0];
     }
   }
@@ -121,9 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // === KEYBOARD ===
   window.addEventListener("keydown", (e) => {
     if (locked) {
-      if (e.key === "ArrowDown" || e.key === "PageDown") {
-        setProgress(progress + 0.15);
-      }
+      if (e.key === "ArrowDown" || e.key === "PageDown") setProgress(progress + 0.15);
       return;
     }
     if (e.key === "ArrowDown" || e.key === "PageDown") {
@@ -136,10 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (e.key === "ArrowUp" || e.key === "PageUp") {
-      if (window.scrollY === 0) {
-        setProgress(progress - 0.15);
-        return;
-      }
+      if (window.scrollY === 0) { setProgress(progress - 0.15); return; }
       const currentScroll = window.scrollY;
       for (let i = allScenes.length - 1; i >= 0; i--) {
         if (allScenes[i].offsetTop < currentScroll - 10) {
@@ -181,11 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // === SCROLLAMA ===
   const scroller = scrollama();
   scroller
-    .setup({
-      step: ".scene",
-      offset: 0.5,
-      progress: true
-    })
+    .setup({ step: ".scene", offset: 0.5, progress: true })
     .onStepEnter(({ element }) => {
       if (element.dataset.type === "info") {
         const index = parseInt(element.dataset.index);
@@ -212,13 +207,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (element.dataset.type === "bronnen") return;
       const yearStart = parseInt(element.dataset.year);
       const next      = element.nextElementSibling;
-      const yearEnd   = next && next.dataset.year
-        ? parseInt(next.dataset.year)
-        : yearStart;
+      const yearEnd   = next && next.dataset.year ? parseInt(next.dataset.year) : yearStart;
       yearDisplay.textContent = Math.round(yearStart + (yearEnd - yearStart) * progress);
     });
 
   window.addEventListener("resize", scroller.resize);
-
   updateEnnuSection();
 });
