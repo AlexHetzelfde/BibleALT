@@ -256,7 +256,6 @@ body {
 
 /* =========================
    EN NU LAAG
-   Scrollt van onderaf omhoog over alles
 ========================= */
 #ennu-layer {
   position: fixed;
@@ -288,8 +287,10 @@ body {
   font-weight: bold;
   color: rgba(203, 174, 73, 0.65);
   letter-spacing: 3px;
+  transition: opacity 0.4s ease;
 }
 
+/* Container voor foto + tekst samen */
 #ennu-photo-container {
   position: absolute;
   top: 170px;
@@ -301,23 +302,77 @@ body {
   align-items: center;
 }
 
-.ennu-photo {
+/* Elke slide = foto links + tekst rechts */
+.ennu-slide {
   position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5vw;
+  padding: 0 6vw;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+}
+.ennu-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Foto */
+.ennu-photo {
   max-height: 100%;
-  max-width: 55vw;
+  max-width: 32vw;
   width: auto;
   height: auto;
   object-fit: contain;
-  opacity: 0;
-  transition: opacity 0.8s ease;
   border-radius: 4px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
 }
 
-.ennu-photo.active {
+/* Tekst rechts */
+.ennu-text {
+  max-width: 340px;
+  flex-shrink: 0;
+}
+
+.ennu-text-inner {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
+}
+
+.ennu-slide.active .ennu-text-inner {
   opacity: 1;
+  transform: translateX(0);
 }
 
+/* Gouden streep boven de tekst */
+.ennu-text-line {
+  width: 48px;
+  height: 2px;
+  background: rgba(203, 174, 73, 0.8);
+  margin-bottom: 20px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s ease 0.8s;
+}
+
+.ennu-slide.active .ennu-text-line {
+  transform: scaleX(1);
+}
+
+.ennu-text p {
+  font-family: Georgia, serif;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.82);
+  font-style: italic;
+}
+
+/* spacer */
 #ennu-spacer {
   height: 700vh;
 }
@@ -331,47 +386,32 @@ body {
     top: 20px;
     left: 20px;
   }
-  #landing-layer h1 {
-    font-size: 2.5rem;
-  }
-  #landing-layer h2 {
-    font-size: 1.3rem;
-  }
-  #nav-dots {
-    right: 12px;
-    gap: 10px;
-  }
-  .textbox {
-    width: 85vw;
-    font-size: 15px;
-    padding: 20px;
-  }
-  .quote-box blockquote {
-    font-size: 1.3rem;
-  }
-  .scene {
-    padding: 40px 5vw;
-    justify-content: center !important;
-  }
-  .bronnen-box {
-    padding: 24px;
-  }
-  .bronnen-box h2 {
-    font-size: 1.5rem;
-  }
-  #ennu-heading {
-    font-size: 2rem;
-    top: 32px;
-  }
-  #ennu-year-label {
-    font-size: 1.2rem;
-    top: 88px;
-  }
-  #ennu-photo-container {
-    top: 130px;
-    bottom: 30px;
+  #landing-layer h1 { font-size: 2.5rem; }
+  #landing-layer h2 { font-size: 1.3rem; }
+  #nav-dots { right: 12px; gap: 10px; }
+  .textbox { width: 85vw; font-size: 15px; padding: 20px; }
+  .quote-box blockquote { font-size: 1.3rem; }
+  .scene { padding: 40px 5vw; justify-content: center !important; }
+  .bronnen-box { padding: 24px; }
+  .bronnen-box h2 { font-size: 1.5rem; }
+
+  /* En nu mobiel: foto boven, tekst onder */
+  .ennu-slide {
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 6vw;
+    justify-content: center;
+    overflow-y: auto;
   }
   .ennu-photo {
+    max-width: 70vw;
+    max-height: 45vh;
+  }
+  .ennu-text {
     max-width: 85vw;
   }
+  .ennu-text p { font-size: 0.95rem; }
+  #ennu-heading { font-size: 2rem; top: 32px; }
+  #ennu-year-label { font-size: 1.2rem; top: 88px; }
+  #ennu-photo-container { top: 130px; bottom: 20px; }
 }
