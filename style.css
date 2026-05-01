@@ -148,7 +148,7 @@ body {
 }
 
 /* =========================
-   QUOTE SCENE — transparant, gecentreerd
+   QUOTE SCENE
 ========================= */
 .scene[data-type="quote"] {
   justify-content: center;
@@ -177,7 +177,7 @@ body {
 }
 
 /* =========================
-   QUOTE BOX — op de foto
+   QUOTE BOX
 ========================= */
 .quote-box {
   text-align: center;
@@ -206,6 +206,7 @@ body {
   letter-spacing: 1px;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
 }
+
 /* =========================
    BRONNEN SCENE
 ========================= */
@@ -214,7 +215,6 @@ body {
   align-items: center;
   background: #111;
 }
-
 .bronnen-box {
   text-align: center;
   max-width: 600px;
@@ -255,6 +255,74 @@ body {
 }
 
 /* =========================
+   EN NU LAAG
+   Scrollt van onderaf omhoog over alles
+========================= */
+#ennu-layer {
+  position: fixed;
+  inset: 0;
+  background: #111;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(100vh);
+  will-change: transform;
+}
+
+#ennu-heading {
+  position: absolute;
+  top: 48px;
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  font-style: italic;
+  font-weight: normal;
+  color: rgba(203, 174, 73, 0.9);
+  letter-spacing: 4px;
+}
+
+#ennu-year-label {
+  position: absolute;
+  top: 118px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: rgba(203, 174, 73, 0.65);
+  letter-spacing: 3px;
+}
+
+#ennu-photo-container {
+  position: absolute;
+  top: 170px;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ennu-photo {
+  position: absolute;
+  max-height: 100%;
+  max-width: 55vw;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+}
+
+.ennu-photo.active {
+  opacity: 1;
+}
+
+#ennu-spacer {
+  height: 700vh;
+}
+
+/* =========================
    MOBIEL
 ========================= */
 @media (max-width: 600px) {
@@ -263,40 +331,47 @@ body {
     top: 20px;
     left: 20px;
   }
-
   #landing-layer h1 {
     font-size: 2.5rem;
   }
-
   #landing-layer h2 {
     font-size: 1.3rem;
   }
-
   #nav-dots {
     right: 12px;
     gap: 10px;
   }
-
   .textbox {
     width: 85vw;
     font-size: 15px;
     padding: 20px;
   }
-
   .quote-box blockquote {
     font-size: 1.3rem;
   }
-
   .scene {
     padding: 40px 5vw;
     justify-content: center !important;
   }
-
   .bronnen-box {
     padding: 24px;
   }
-
   .bronnen-box h2 {
     font-size: 1.5rem;
+  }
+  #ennu-heading {
+    font-size: 2rem;
+    top: 32px;
+  }
+  #ennu-year-label {
+    font-size: 1.2rem;
+    top: 88px;
+  }
+  #ennu-photo-container {
+    top: 130px;
+    bottom: 30px;
+  }
+  .ennu-photo {
+    max-width: 85vw;
   }
 }
