@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let progress        = 0;
   let locked          = true;
   let currentSceneTop = null;
+  let currentEnnuIdx  = 0;   // ← bijhouden welke ennu-slide actief is
 
   document.body.style.overflow = "hidden";
 
@@ -61,6 +62,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // === EN NU: SLIDE WISSELEN ===
+  // Wisselt naar een nieuwe slide. Als de tekst gelijk is aan de vorige
+  // slide, wordt de tekst-animatie overgeslagen zodat de tekst blijft staan.
+  function setEnnuSlide(newIdx) {
+    if (newIdx === currentEnnuIdx) return;
+
+    const prevSlide = ennuSlides[currentEnnuIdx];
+    const newSlide  = ennuSlides[newIdx];
+
+    const sameText =
+      prevSlide.querySelector("p").textContent.trim() ===
+      newSlide.querySelector("p").textContent.trim();
+
+    // Wissel de actieve slide (alleen de foto verandert zichtbaar)
+    ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === newIdx));
+    ennuYearLabel.textContent = ENNU_YEARS[newIdx];
+
+    // Als de tekst identiek is: tekst direct op eindpositie zetten, geen animatie
+    if (sameText) {
+      const textInner = newSlide.querySelector(".ennu-text-inner");
+      const textLine  = newSlide.querySelector(".ennu-text-line");
+
+      // Zet inline stijlen om transitie te omzeilen
+      textInner.style.cssText = "transition:none;opacity:1;transform:translateX(0)";
+      textLine.style.cssText  = "transition:none;transform:scaleX(1)";
+
+      // Na twee frames de inline stijlen verwijderen; CSS-klasse houdt de staat vast
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        textInner.style.cssText = "";
+        textLine.style.cssText  = "";
+      }));
+    }
+
+    currentEnnuIdx = newIdx;
+  }
+
   // === EN NU SECTIE ===
   function updateEnnuSection() {
     const spacerTop    = ennuSpacer.offsetTop;
@@ -69,19 +106,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const relScroll    = scrollTop - spacerTop;
     const sectionProg  = relScroll / spacerHeight;
 
-    // Voor de spacer: gordijn onderaan buiten beeld
+    // Vóór de spacer: ennu-laag staat beneden buiten beeld
     if (sectionProg < 0) {
-      ennuLayer.style.transform = "translateY(100vh)";
+      ennuLayer.style.transform    = "translateY(100vh)";
+      ennuLayer.style.pointerEvents = "none";
       return;
     }
 
-    // Na de spacer: gordijn schuift omhoog zodat bronnen zichtbaar worden
+    // Voorbij de spacer: ennu-laag schuift omhoog → bronvermelding wordt zichtbaar
     if (sectionProg >= 1) {
       const beyondScroll = scrollTop - (spacerTop + spacerHeight);
       const exitProgress = Math.min(1, beyondScroll / window.innerHeight);
-      ennuLayer.style.transform = `translateY(${-exitProgress * 100}vh)`;
+      ennuLayer.style.transform     = `translateY(${-exitProgress * 100}vh)`;
+      // Zodra de laag volledig weg is, events doorsturen naar de bronnen-sectie
+      ennuLayer.style.pointerEvents = exitProgress >= 1 ? "none" : "auto";
       return;
     }
+
+    ennuLayer.style.pointerEvents = "auto";
 
     // Fase 1: gordijn schuift van onderaf omhoog
     const curtainProg = Math.min(1, sectionProg / CURTAIN_PHASE);
@@ -92,15 +134,18 @@ document.addEventListener("DOMContentLoaded", () => {
       navDotsContainer.classList.remove("visible");
     }
 
-    // Fase 2: slides wisselen
+    // Fase 2: slides wisselen op basis van scroll-voortgang
     if (sectionProg > CURTAIN_PHASE) {
       const photoProgress = (sectionProg - CURTAIN_PHASE) / (1 - CURTAIN_PHASE);
       const idx = Math.min(5, Math.floor(photoProgress * 6));
-      ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === idx));
-      ennuYearLabel.textContent = ENNU_YEARS[idx];
+      setEnnuSlide(idx);
     } else {
-      ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === 0));
-      ennuYearLabel.textContent = ENNU_YEARS[0];
+      // Zorg dat slide 0 actief is tijdens het inrijden van het gordijn
+      if (currentEnnuIdx !== 0) {
+        ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === 0));
+        ennuYearLabel.textContent = ENNU_YEARS[0];
+        currentEnnuIdx = 0;
+      }
     }
   }
 
