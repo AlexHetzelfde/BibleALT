@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let progress        = 0;
   let locked          = true;
   let currentSceneTop = null;
-  let currentEnnuIdx  = 0;   // ← bijhouden welke ennu-slide actief is
+  let currentEnnuIdx  = 0;
 
   document.body.style.overflow = "hidden";
 
@@ -63,8 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // === EN NU: SLIDE WISSELEN ===
-  // Wisselt naar een nieuwe slide. Als de tekst gelijk is aan de vorige
-  // slide, wordt de tekst-animatie overgeslagen zodat de tekst blijft staan.
   function setEnnuSlide(newIdx) {
     if (newIdx === currentEnnuIdx) return;
 
@@ -75,20 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
       prevSlide.querySelector("p").textContent.trim() ===
       newSlide.querySelector("p").textContent.trim();
 
-    // Wissel de actieve slide (alleen de foto verandert zichtbaar)
     ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === newIdx));
     ennuYearLabel.textContent = ENNU_YEARS[newIdx];
 
-    // Als de tekst identiek is: tekst direct op eindpositie zetten, geen animatie
     if (sameText) {
       const textInner = newSlide.querySelector(".ennu-text-inner");
       const textLine  = newSlide.querySelector(".ennu-text-line");
-
-      // Zet inline stijlen om transitie te omzeilen
       textInner.style.cssText = "transition:none;opacity:1;transform:translateX(0)";
       textLine.style.cssText  = "transition:none;transform:scaleX(1)";
-
-      // Na twee frames de inline stijlen verwijderen; CSS-klasse houdt de staat vast
       requestAnimationFrame(() => requestAnimationFrame(() => {
         textInner.style.cssText = "";
         textLine.style.cssText  = "";
@@ -108,22 +100,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Vóór de spacer: ennu-laag staat beneden buiten beeld
     if (sectionProg < 0) {
-      ennuLayer.style.transform    = "translateY(100vh)";
+      ennuLayer.style.transform     = "translateY(100vh)";
+      ennuLayer.style.opacity       = "1";
       ennuLayer.style.pointerEvents = "none";
       return;
     }
 
-    // Voorbij de spacer: ennu-laag schuift omhoog → bronvermelding wordt zichtbaar
+    // Na de spacer: ennu-laag fades uit, normale pagina (bronnen) wordt zichtbaar
     if (sectionProg >= 1) {
-      const beyondScroll = scrollTop - (spacerTop + spacerHeight);
-      const exitProgress = Math.min(1, beyondScroll / window.innerHeight);
-      ennuLayer.style.transform     = `translateY(${-exitProgress * 100}vh)`;
-      // Zodra de laag volledig weg is, events doorsturen naar de bronnen-sectie
-      ennuLayer.style.pointerEvents = exitProgress >= 1 ? "none" : "auto";
+      const beyondScroll  = scrollTop - (spacerTop + spacerHeight);
+      const fadeProgress  = Math.min(1, beyondScroll / 300);
+      ennuLayer.style.transform     = "translateY(0)";
+      ennuLayer.style.opacity       = String(1 - fadeProgress);
+      ennuLayer.style.pointerEvents = fadeProgress >= 0.5 ? "none" : "auto";
       return;
     }
 
     ennuLayer.style.pointerEvents = "auto";
+    ennuLayer.style.opacity       = "1";
 
     // Fase 1: gordijn schuift van onderaf omhoog
     const curtainProg = Math.min(1, sectionProg / CURTAIN_PHASE);
@@ -140,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const idx = Math.min(5, Math.floor(photoProgress * 6));
       setEnnuSlide(idx);
     } else {
-      // Zorg dat slide 0 actief is tijdens het inrijden van het gordijn
       if (currentEnnuIdx !== 0) {
         ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === 0));
         ennuYearLabel.textContent = ENNU_YEARS[0];
