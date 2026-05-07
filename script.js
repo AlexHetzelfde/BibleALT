@@ -107,12 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Na de spacer: fade uit over 400px, daarna volledig weg
-    // De exit-spacer (150vh) geeft genoeg ruimte zodat bronnen
-    // pas zichtbaar zijn als de ennu-laag al lang display:none heeft
+    // Na de spacer: ennu-laag fadet uit, achtergrond naar zwart
     if (sectionProg >= 1) {
       const beyondScroll = scrollTop - (spacerTop + spacerHeight);
       const fadeProgress = Math.min(1, beyondScroll / 400);
+
+      // Zodra we beginnen te faden: achtergrond naar zwart (slide 0)
+      // zodat er geen foto zichtbaar is achter de verdwijnende ennu-laag
+      setBackground(0);
 
       if (fadeProgress >= 1) {
         ennuLayer.style.display = "none";
