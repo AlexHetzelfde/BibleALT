@@ -100,22 +100,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Vóór de spacer: ennu-laag staat beneden buiten beeld
     if (sectionProg < 0) {
+      ennuLayer.style.display       = "";
       ennuLayer.style.transform     = "translateY(100vh)";
       ennuLayer.style.opacity       = "1";
       ennuLayer.style.pointerEvents = "none";
       return;
     }
 
-    // Na de spacer: ennu-laag fades uit, bronnenlijst wordt zichtbaar
+    // Na de spacer: ennu-laag fadet uit over 300px scroll
+    // Zodra volledig weg: display:none zodat bronnen normaal scrollbaar zijn
     if (sectionProg >= 1) {
-      const beyondScroll  = scrollTop - (spacerTop + spacerHeight);
-      const fadeProgress  = Math.min(1, beyondScroll / 300);
-      ennuLayer.style.transform     = "translateY(0)";
-      ennuLayer.style.opacity       = String(1 - fadeProgress);
-      ennuLayer.style.pointerEvents = fadeProgress >= 0.5 ? "none" : "auto";
+      const beyondScroll = scrollTop - (spacerTop + spacerHeight);
+      const fadeProgress = Math.min(1, beyondScroll / 300);
+
+      if (fadeProgress >= 1) {
+        ennuLayer.style.display = "none";
+      } else {
+        ennuLayer.style.display       = "";
+        ennuLayer.style.transform     = "translateY(0)";
+        ennuLayer.style.opacity       = String(1 - fadeProgress);
+        ennuLayer.style.pointerEvents = "none";
+      }
       return;
     }
 
+    // sectionProg 0–1: ennu-laag actief
+    ennuLayer.style.display       = "";
     ennuLayer.style.pointerEvents = "auto";
     ennuLayer.style.opacity       = "1";
 
@@ -229,7 +239,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.add("visible");
       }
-      // bronnen: geen scrollama-animatie nodig, altijd zichtbaar via CSS
+      // bronnen: altijd zichtbaar via CSS, geen scrollama nodig
     })
     .onStepExit(({ element }) => {
       if (element.dataset.type === "info") {
@@ -237,7 +247,6 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.remove("visible");
       }
-      // bronnen: geen scrollama-animatie nodig
     })
     .onStepProgress(({ element, progress }) => {
       if (element.dataset.type === "bronnen") return;
