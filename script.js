@@ -107,21 +107,18 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Na de spacer: ennu-laag fadet uit, achtergrond naar zwart
+    // Na de spacer: ennu-laag scrollt omhoog als een gordijn
     if (sectionProg >= 1) {
+      const exitSpacer   = document.getElementById("exit-spacer");
       const beyondScroll = scrollTop - (spacerTop + spacerHeight);
-      const fadeProgress = Math.min(1, beyondScroll / 400);
+      const scrollProg   = Math.min(1, beyondScroll / exitSpacer.offsetHeight);
 
-      // Zodra we beginnen te faden: achtergrond naar zwart (slide 0)
-      // zodat er geen foto zichtbaar is achter de verdwijnende ennu-laag
-      setBackground(0);
-
-      if (fadeProgress >= 1) {
+      if (scrollProg >= 1) {
         ennuLayer.style.display = "none";
       } else {
         ennuLayer.style.display       = "";
-        ennuLayer.style.transform     = "translateY(0)";
-        ennuLayer.style.opacity       = String(1 - fadeProgress);
+        ennuLayer.style.opacity       = "1";
+        ennuLayer.style.transform     = `translateY(-${scrollProg * 100}vh)`;
         ennuLayer.style.pointerEvents = "none";
       }
       return;
