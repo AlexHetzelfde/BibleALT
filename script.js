@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const ennuSection      = document.getElementById("ennu-section");
   const ennuSlides       = document.querySelectorAll(".ennu-slide");
 
-  let progress        = 0;
-  let locked          = true;
+  let progress      = 0;
+  let locked        = true;
   let currentSceneTop = null;
-  let lastEnnuIndex   = -1;
+  let lastEnnuIndex = -1;
 
   document.body.style.overflow = "hidden";
 
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === ACHTERGROND (alleen voor story) ===
+  // === ACHTERGROND ===
   function setBackground(index) {
     bgSlides.forEach((slide, i) => {
       slide.classList.toggle("active", i === index);
@@ -57,16 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === ENNU STICKY SCROLL LOGICA ===
+  // === EN NU: sticky scroll logica ===
   function updateEnnuSection(scrollTop) {
-    const sectionTop    = ennuSection.offsetTop;
+    const sectionTop   = ennuSection.offsetTop;
     const sectionHeight = ennuSection.offsetHeight;
-    const scrollRange   = sectionHeight - window.innerHeight;
-    const scrollInside  = scrollTop - sectionTop;
+    const scrollRange  = sectionHeight - window.innerHeight;
+    const scrollInside = scrollTop - sectionTop;
 
     if (scrollInside < 0 || scrollInside > scrollRange) return;
 
-    // Hoeveel zijn we door de sectie (0 → 1)
     const rawProgress = scrollInside / scrollRange;
     const slideIndex  = Math.min(
       Math.floor(rawProgress * ennuSlides.length),
@@ -80,13 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
       lastEnnuIndex = slideIndex;
     }
 
-    // Jaar bijwerken
-    yearDisplay.textContent = ennuSlides[slideIndex].dataset.year;
-    yearDisplay.classList.add("visible");
+    // Groot jaartal linksboven verbergen — jaar staat in de caption
+    yearDisplay.classList.remove("visible");
     navDotsContainer.classList.remove("visible");
   }
 
-  // === Verberg UI na ennu-sectie (bij verantwoording) ===
+  // === Verberg UI volledig bij data-verantwoording ===
   const dataSection = document.getElementById("data-verantwoording");
   if (dataSection) {
     const hideUiObserver = new IntersectionObserver((entries) => {
@@ -94,8 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (entry.isIntersecting) {
           yearDisplay.classList.remove("visible");
           navDotsContainer.classList.remove("visible");
-        } else {
-          // Laat scrollama/ennu-logica bepalen of ze terugkomen
         }
       });
     }, { threshold: 0.05 });
@@ -108,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     progressBar.style.width = ((scrollTop / docHeight) * 100) + "%";
 
-    // Parallax op actieve story-achtergrond
     if (currentSceneTop !== null) {
       const activeSlide = document.querySelector(".bg-slide.active");
       if (activeSlide && activeSlide.style.backgroundImage) {
@@ -118,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // En nu? sectie afhandelen
     updateEnnuSection(scrollTop);
   });
 
@@ -177,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA (alleen story-scenes) ===
+  // === SCROLLAMA (alleen story) ===
   const scroller = scrollama();
   scroller
     .setup({ step: ".scene", offset: 0.5, progress: true })
@@ -188,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateNavDots(index);
         element.querySelector(".textbox").classList.add("visible");
         currentSceneTop = element.offsetTop;
-        // Navdots terug zichtbaar in story
         if (!locked) navDotsContainer.classList.add("visible");
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.add("visible");
@@ -202,9 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
     .onStepProgress(({ element, progress }) => {
-      // Alleen jaar bijwerken als we NIET in de ennu-sectie zijn
-      const scrollTop    = window.scrollY;
-      const sectionTop   = ennuSection.offsetTop;
+      // Jaar alleen bijwerken als we buiten de ennu-sectie zijn
+      const scrollTop     = window.scrollY;
+      const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
       if (scrollTop >= sectionTop && scrollTop <= sectionBottom) return;
 
