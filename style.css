@@ -108,7 +108,7 @@ body {
 }
 
 /* =========================
-   VASTE ACHTERGRONDEN
+   VASTE ACHTERGRONDEN (story)
 ========================= */
 #backgrounds {
   position: fixed;
@@ -134,7 +134,7 @@ body {
 }
 
 /* =========================
-   INFO SCENE
+   SCENE (algemeen)
 ========================= */
 .scene {
   min-height: 100vh;
@@ -146,10 +146,6 @@ body {
 .scene.right {
   justify-content: flex-start;
 }
-
-/* =========================
-   QUOTE SCENE
-========================= */
 .scene[data-type="quote"] {
   justify-content: center;
   align-items: center;
@@ -208,68 +204,74 @@ body {
 }
 
 /* =========================
-   EN NU SECTIE
-   Gewone documentflow, eigen
-   donkere achtergrond zodat de
-   fixed foto er niet doorheen schijnt
+   EN NU: STICKY SCROLL SECTIE
+   Hoogte = 6 slides × 100vh scroll-diepte
+   + 100vh instap = 700vh totaal
 ========================= */
 #ennu-section {
   position: relative;
   z-index: 1;
   background: #111;
+  height: 700vh;
 }
 
-.ennu-section-header {
-  text-align: center;
-  padding: 100px 0 20px;
-}
-
-.ennu-section-header h2 {
-  font-family: Georgia, serif;
-  font-size: 3rem;
-  font-style: italic;
-  font-weight: normal;
-  color: rgba(203, 174, 73, 0.9);
-  letter-spacing: 4px;
-}
-
-.ennu-block {
-  min-height: 100vh;
+/* De sticky container plakt in beeld
+   terwijl de ouder door scrollt        */
+.ennu-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 6vw;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.ennu-block.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.ennu-year-label {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: rgba(203, 174, 73, 0.65);
+/* Subtiel label linksboven (naast het jaartal) */
+.ennu-label {
+  position: absolute;
+  top: 44px;
+  left: 50px;
+  padding-left: 220px; /* rechts van het grote jaartal */
+  font-family: Georgia, serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(203, 174, 73, 0.55);
   letter-spacing: 3px;
-  margin-bottom: 40px;
+  pointer-events: none;
+  z-index: 10;
 }
 
-.ennu-content {
+/* Elke slide ligt gestapeld over de sticky container */
+.ennu-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  pointer-events: none;
+}
+.ennu-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Inhoud: kaart + tekst naast elkaar */
+.ennu-slide-inner {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5vw;
-  width: 100%;
   max-width: 1100px;
+  width: 100%;
+  padding: 0 6vw;
 }
 
-.ennu-photo {
-  max-height: 62vh;
-  max-width: 45vw;
+.ennu-map {
+  max-height: 68vh;
+  max-width: 52vw;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -278,19 +280,19 @@ body {
   flex-shrink: 0;
 }
 
-.ennu-text {
-  max-width: 340px;
+.ennu-caption {
+  max-width: 300px;
   flex-shrink: 0;
 }
 
-.ennu-text-line {
+.ennu-caption-line {
   width: 48px;
   height: 2px;
   background: rgba(203, 174, 73, 0.8);
   margin-bottom: 20px;
 }
 
-.ennu-text p {
+.ennu-caption p {
   font-family: Georgia, serif;
   font-size: 1.05rem;
   line-height: 1.85;
@@ -311,7 +313,6 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
 #data-verantwoording h2 {
   font-family: Georgia, serif;
   font-size: 2rem;
@@ -320,7 +321,6 @@ body {
   letter-spacing: 2px;
   text-align: center;
 }
-
 #data-verantwoording p {
   color: rgba(255, 255, 255, 0.75);
   font-size: 1rem;
@@ -328,7 +328,6 @@ body {
   margin-bottom: 1.5rem;
   max-width: 680px;
 }
-
 #data-verantwoording ol {
   max-width: 680px;
   width: 100%;
@@ -337,7 +336,6 @@ body {
   flex-direction: column;
   gap: 12px;
 }
-
 #data-verantwoording ol li {
   color: rgba(255, 255, 255, 0.75);
   font-size: 1rem;
@@ -360,7 +358,6 @@ body {
   text-align: center;
   border-top: 1px solid rgba(203, 174, 73, 0.2);
 }
-
 #bronnen-page h2 {
   font-family: Georgia, serif;
   font-size: 2rem;
@@ -368,7 +365,6 @@ body {
   margin-bottom: 2rem;
   letter-spacing: 2px;
 }
-
 #bronnen-page ul {
   list-style: none;
   display: flex;
@@ -377,7 +373,6 @@ body {
   max-width: 600px;
   width: 100%;
 }
-
 #bronnen-page ul li a {
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
@@ -387,7 +382,6 @@ body {
   padding-bottom: 4px;
   transition: color 0.3s, border-color 0.3s;
 }
-
 #bronnen-page ul li a:hover {
   color: rgba(203, 174, 73, 0.95);
   border-color: rgba(203, 174, 73, 0.8);
@@ -397,11 +391,7 @@ body {
    MOBIEL
 ========================= */
 @media (max-width: 600px) {
-  #year-display {
-    font-size: 3.5rem;
-    top: 20px;
-    left: 20px;
-  }
+  #year-display { font-size: 3.5rem; top: 20px; left: 20px; }
   #landing-layer h1 { font-size: 2.5rem; }
   #landing-layer h2 { font-size: 1.3rem; }
   #nav-dots { right: 12px; gap: 10px; }
@@ -409,20 +399,11 @@ body {
   .quote-box blockquote { font-size: 1.3rem; }
   .scene { padding: 40px 5vw; justify-content: center !important; }
 
-  .ennu-content {
-    flex-direction: column;
-    gap: 24px;
-  }
-  .ennu-photo {
-    max-width: 80vw;
-    max-height: 40vh;
-  }
-  .ennu-text {
-    max-width: 85vw;
-  }
-  .ennu-text p { font-size: 0.95rem; }
-  .ennu-section-header h2 { font-size: 2rem; }
-  .ennu-year-label { font-size: 1.2rem; }
+  .ennu-label { display: none; }
+  .ennu-slide-inner { flex-direction: column; gap: 24px; padding: 0 5vw; }
+  .ennu-map { max-width: 85vw; max-height: 40vh; }
+  .ennu-caption { max-width: 85vw; }
+  .ennu-caption p { font-size: 0.95rem; }
 
   #data-verantwoording { padding: 60px 24px 80px; }
   #data-verantwoording h2 { font-size: 1.5rem; }
