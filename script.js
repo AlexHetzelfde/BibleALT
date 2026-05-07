@@ -1,23 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const landing           = document.getElementById("landing-layer");
-  const bgSlides          = document.querySelectorAll(".bg-slide");
-  const yearDisplay       = document.getElementById("year-display");
-  const navDotsContainer  = document.getElementById("nav-dots");
-  const progressBar       = document.getElementById("progress-bar");
-  const infoScenes        = document.querySelectorAll(".scene[data-type='info']");
-  const allScenes         = document.querySelectorAll(".scene");
-
-  const ennuLayer         = document.getElementById("ennu-layer");
-  const ennuSpacer        = document.getElementById("ennu-spacer");
-  const ennuSlides        = document.querySelectorAll(".ennu-slide");
-  const ennuYearLabel     = document.getElementById("ennu-year-label");
-  const ENNU_YEARS        = [1961, 1998, 2010, 2017, 2021, 2025];
-  const CURTAIN_PHASE     = 0.12;
+  const landing          = document.getElementById("landing-layer");
+  const bgSlides         = document.querySelectorAll(".bg-slide");
+  const yearDisplay      = document.getElementById("year-display");
+  const navDotsContainer = document.getElementById("nav-dots");
+  const progressBar      = document.getElementById("progress-bar");
+  const infoScenes       = document.querySelectorAll(".scene[data-type='info']");
+  const allScenes        = document.querySelectorAll(".scene");
+  const ennuBlocks       = document.querySelectorAll(".ennu-block");
 
   let progress        = 0;
   let locked          = true;
   let currentSceneTop = null;
-  let currentEnnuIdx  = 0;
 
   document.body.style.overflow = "hidden";
 
@@ -62,94 +55,34 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === EN NU: SLIDE WISSELEN ===
-  function setEnnuSlide(newIdx) {
-    if (newIdx === currentEnnuIdx) return;
-
-    const prevSlide = ennuSlides[currentEnnuIdx];
-    const newSlide  = ennuSlides[newIdx];
-
-    const sameText =
-      prevSlide.querySelector("p").textContent.trim() ===
-      newSlide.querySelector("p").textContent.trim();
-
-    ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === newIdx));
-    ennuYearLabel.textContent = ENNU_YEARS[newIdx];
-
-    if (sameText) {
-      const textInner = newSlide.querySelector(".ennu-text-inner");
-      const textLine  = newSlide.querySelector(".ennu-text-line");
-      textInner.style.cssText = "transition:none;opacity:1;transform:translateX(0)";
-      textLine.style.cssText  = "transition:none;transform:scaleX(1)";
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        textInner.style.cssText = "";
-        textLine.style.cssText  = "";
-      }));
-    }
-
-    currentEnnuIdx = newIdx;
-  }
-
-  // === EN NU SECTIE ===
-  function updateEnnuSection() {
-    const spacerTop    = ennuSpacer.offsetTop;
-    const spacerHeight = ennuSpacer.offsetHeight;
-    const scrollTop    = window.scrollY;
-    const relScroll    = scrollTop - spacerTop;
-    const sectionProg  = relScroll / spacerHeight;
-
-    // Vóór de spacer: ennu-laag staat beneden buiten beeld
-    if (sectionProg < 0) {
-      ennuLayer.style.display       = "";
-      ennuLayer.style.transform     = "translateY(100vh)";
-      ennuLayer.style.opacity       = "1";
-      ennuLayer.style.pointerEvents = "none";
-      return;
-    }
-
-    // Na de spacer: ennu-laag scrollt omhoog als een gordijn
-    if (sectionProg >= 1) {
-      const exitSpacer   = document.getElementById("exit-spacer");
-      const beyondScroll = scrollTop - (spacerTop + spacerHeight);
-      const scrollProg   = Math.min(1, beyondScroll / exitSpacer.offsetHeight);
-
-      if (scrollProg >= 1) {
-        ennuLayer.style.display = "none";
-      } else {
-        ennuLayer.style.display       = "";
-        ennuLayer.style.opacity       = "1";
-        ennuLayer.style.transform     = `translateY(-${scrollProg * 100}vh)`;
-        ennuLayer.style.pointerEvents = "none";
+  // === ENNU BLOCKS: fade in bij scrollen via IntersectionObserver ===
+  const ennuObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
       }
-      return;
-    }
+    });
+  }, { threshold: 0.2 });
 
-    // sectionProg 0–1: ennu-laag actief
-    ennuLayer.style.display       = "";
-    ennuLayer.style.pointerEvents = "auto";
-    ennuLayer.style.opacity       = "1";
+  ennuBlocks.forEach(block => ennuObserver.observe(block));
 
-    // Fase 1: gordijn schuift van onderaf omhoog
-    const curtainProg = Math.min(1, sectionProg / CURTAIN_PHASE);
-    ennuLayer.style.transform = `translateY(${(1 - curtainProg) * 100}vh)`;
-
-    if (curtainProg > 0.5) {
-      yearDisplay.classList.remove("visible");
-      navDotsContainer.classList.remove("visible");
-    }
-
-    // Fase 2: slides wisselen op basis van scroll-voortgang
-    if (sectionProg > CURTAIN_PHASE) {
-      const photoProgress = (sectionProg - CURTAIN_PHASE) / (1 - CURTAIN_PHASE);
-      const idx = Math.min(5, Math.floor(photoProgress * 6));
-      setEnnuSlide(idx);
-    } else {
-      if (currentEnnuIdx !== 0) {
-        ennuSlides.forEach((slide, i) => slide.classList.toggle("active", i === 0));
-        ennuYearLabel.textContent = ENNU_YEARS[0];
-        currentEnnuIdx = 0;
-      }
-    }
+  // === Verberg jaar & navdots zodra we de ennu-sectie in scrollen ===
+  const ennuSection = document.getElementById("ennu-section");
+  if (ennuSection) {
+    const hideUiObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          yearDisplay.classList.remove("visible");
+          navDotsContainer.classList.remove("visible");
+        } else {
+          if (!locked) {
+            yearDisplay.classList.add("visible");
+            navDotsContainer.classList.add("visible");
+          }
+        }
+      });
+    }, { threshold: 0.05 });
+    hideUiObserver.observe(ennuSection);
   }
 
   // === SCROLL ===
@@ -166,8 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
           `calc(50% + ${relativeScroll * 0.03}px)`;
       }
     }
-
-    updateEnnuSection();
   });
 
   // === KEYBOARD ===
@@ -255,5 +186,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   window.addEventListener("resize", scroller.resize);
-  updateEnnuSection();
 });
