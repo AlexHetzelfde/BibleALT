@@ -106,7 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Na de spacer: ennu-laag fades uit, normale pagina (bronnen) wordt zichtbaar
+    // Na de spacer: ennu-laag fades uit, bronnenlijst wordt zichtbaar
     if (sectionProg >= 1) {
       const beyondScroll  = scrollTop - (spacerTop + spacerHeight);
       const fadeProgress  = Math.min(1, beyondScroll / 300);
@@ -228,18 +228,16 @@ document.addEventListener("DOMContentLoaded", () => {
         currentSceneTop = element.offsetTop;
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.add("visible");
-      } else if (element.dataset.type === "bronnen") {
-        element.querySelector(".bronnen-box").classList.add("visible");
       }
+      // bronnen: geen scrollama-animatie nodig, altijd zichtbaar via CSS
     })
     .onStepExit(({ element }) => {
       if (element.dataset.type === "info") {
         element.querySelector(".textbox").classList.remove("visible");
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.remove("visible");
-      } else if (element.dataset.type === "bronnen") {
-        element.querySelector(".bronnen-box").classList.remove("visible");
       }
+      // bronnen: geen scrollama-animatie nodig
     })
     .onStepProgress(({ element, progress }) => {
       if (element.dataset.type === "bronnen") return;
