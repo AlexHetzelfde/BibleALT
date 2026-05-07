@@ -209,6 +209,7 @@ body {
 
 /* =========================
    BRONNEN SCENE
+   — geen scrollama-animatie, altijd zichtbaar
 ========================= */
 .scene[data-type="bronnen"] {
   justify-content: center;
@@ -219,13 +220,8 @@ body {
   text-align: center;
   max-width: 600px;
   padding: 40px;
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-.bronnen-box.visible {
+  /* altijd zichtbaar — geen opacity/transform animatie */
   opacity: 1;
-  transform: translateY(0);
 }
 .bronnen-box h2 {
   font-family: Georgia, serif;
