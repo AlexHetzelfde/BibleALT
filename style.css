@@ -134,6 +134,16 @@ body {
 }
 
 /* =========================
+   SPACERS
+========================= */
+#ennu-spacer {
+  height: 700vh;
+}
+#exit-spacer {
+  height: 150vh;
+}
+
+/* =========================
    INFO SCENE
 ========================= */
 .scene {
@@ -208,49 +218,6 @@ body {
 }
 
 /* =========================
-   BRONNEN SCENE
-   — geen scrollama-animatie, altijd zichtbaar
-========================= */
-.scene[data-type="bronnen"] {
-  justify-content: center;
-  align-items: center;
-  background: #111;
-}
-.bronnen-box {
-  text-align: center;
-  max-width: 600px;
-  padding: 40px;
-  /* altijd zichtbaar — geen opacity/transform animatie */
-  opacity: 1;
-}
-.bronnen-box h2 {
-  font-family: Georgia, serif;
-  font-size: 2rem;
-  color: rgba(203, 174, 73, 0.95);
-  margin-bottom: 2rem;
-  letter-spacing: 2px;
-}
-.bronnen-box ul {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.bronnen-box ul li a {
-  color: rgba(255, 255, 255, 0.75);
-  text-decoration: none;
-  font-size: 1rem;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(203, 174, 73, 0.3);
-  padding-bottom: 4px;
-  transition: color 0.3s, border-color 0.3s;
-}
-.bronnen-box ul li a:hover {
-  color: rgba(203, 174, 73, 0.95);
-  border-color: rgba(203, 174, 73, 0.8);
-}
-
-/* =========================
    EN NU LAAG
 ========================= */
 #ennu-layer {
@@ -286,7 +253,6 @@ body {
   transition: opacity 0.4s ease;
 }
 
-/* Container voor foto + tekst samen */
 #ennu-photo-container {
   position: absolute;
   top: 170px;
@@ -298,7 +264,6 @@ body {
   align-items: center;
 }
 
-/* Elke slide = foto links + tekst rechts */
 .ennu-slide {
   position: absolute;
   inset: 0;
@@ -316,7 +281,6 @@ body {
   pointer-events: auto;
 }
 
-/* Foto */
 .ennu-photo {
   max-height: 100%;
   max-width: 32vw;
@@ -328,7 +292,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Tekst rechts */
 .ennu-text {
   max-width: 340px;
   flex-shrink: 0;
@@ -345,7 +308,6 @@ body {
   transform: translateX(0);
 }
 
-/* Gouden streep boven de tekst */
 .ennu-text-line {
   width: 48px;
   height: 2px;
@@ -368,9 +330,54 @@ body {
   font-style: italic;
 }
 
-/* spacer */
-#ennu-spacer {
-  height: 700vh;
+/* =========================
+   BRONNEN PAGINA
+   Staat buiten #story, gewone
+   document-flow zwarte pagina
+========================= */
+#bronnen-page {
+  position: relative;
+  z-index: 1;
+  background: #111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+#bronnen-page h2 {
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  color: rgba(203, 174, 73, 0.95);
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+}
+
+#bronnen-page ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  width: 100%;
+}
+
+#bronnen-page ul li a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(203, 174, 73, 0.3);
+  padding-bottom: 4px;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+#bronnen-page ul li a:hover {
+  color: rgba(203, 174, 73, 0.95);
+  border-color: rgba(203, 174, 73, 0.8);
 }
 
 /* =========================
@@ -388,10 +395,9 @@ body {
   .textbox { width: 85vw; font-size: 15px; padding: 20px; }
   .quote-box blockquote { font-size: 1.3rem; }
   .scene { padding: 40px 5vw; justify-content: center !important; }
-  .bronnen-box { padding: 24px; }
-  .bronnen-box h2 { font-size: 1.5rem; }
+  #bronnen-page { padding: 60px 24px; }
+  #bronnen-page h2 { font-size: 1.5rem; }
 
-  /* En nu mobiel: foto boven, tekst onder */
   .ennu-slide {
     flex-direction: column;
     gap: 24px;
