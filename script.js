@@ -107,11 +107,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Na de spacer: ennu-laag fadet uit over 300px scroll
-    // Zodra volledig weg: display:none zodat bronnen normaal scrollbaar zijn
+    // Na de spacer: fade uit over 400px, daarna volledig weg
+    // De exit-spacer (150vh) geeft genoeg ruimte zodat bronnen
+    // pas zichtbaar zijn als de ennu-laag al lang display:none heeft
     if (sectionProg >= 1) {
       const beyondScroll = scrollTop - (spacerTop + spacerHeight);
-      const fadeProgress = Math.min(1, beyondScroll / 300);
+      const fadeProgress = Math.min(1, beyondScroll / 400);
 
       if (fadeProgress >= 1) {
         ennuLayer.style.display = "none";
@@ -225,7 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA ===
+  // === SCROLLAMA (alleen info + quote scenes) ===
   const scroller = scrollama();
   scroller
     .setup({ step: ".scene", offset: 0.5, progress: true })
@@ -239,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (element.dataset.type === "quote") {
         element.querySelector(".quote-box").classList.add("visible");
       }
-      // bronnen: altijd zichtbaar via CSS, geen scrollama nodig
     })
     .onStepExit(({ element }) => {
       if (element.dataset.type === "info") {
@@ -249,7 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     })
     .onStepProgress(({ element, progress }) => {
-      if (element.dataset.type === "bronnen") return;
       const yearStart = parseInt(element.dataset.year);
       const next      = element.nextElementSibling;
       const yearEnd   = next && next.dataset.year ? parseInt(next.dataset.year) : yearStart;
