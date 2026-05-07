@@ -53,7 +53,7 @@ body {
 }
 
 /* =========================
-   JAARTAL
+   JAARTAL (story)
 ========================= */
 #year-display {
   position: fixed;
@@ -108,7 +108,7 @@ body {
 }
 
 /* =========================
-   VASTE ACHTERGRONDEN (story)
+   VASTE ACHTERGRONDEN
 ========================= */
 #backgrounds {
   position: fixed;
@@ -204,9 +204,7 @@ body {
 }
 
 /* =========================
-   EN NU: STICKY SCROLL SECTIE
-   Hoogte = 6 slides × 100vh scroll-diepte
-   + 100vh instap = 700vh totaal
+   EN NU: STICKY SCROLL
 ========================= */
 #ennu-section {
   position: relative;
@@ -215,8 +213,6 @@ body {
   height: 700vh;
 }
 
-/* De sticky container plakt in beeld
-   terwijl de ouder door scrollt        */
 .ennu-sticky {
   position: sticky;
   top: 0;
@@ -227,22 +223,20 @@ body {
   justify-content: center;
 }
 
-/* Subtiel label linksboven (naast het jaartal) */
 .ennu-label {
   position: absolute;
-  top: 44px;
-  left: 50px;
-  padding-left: 220px; /* rechts van het grote jaartal */
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-style: italic;
-  color: rgba(203, 174, 73, 0.55);
-  letter-spacing: 3px;
+  color: rgba(203, 174, 73, 0.45);
+  letter-spacing: 4px;
   pointer-events: none;
   z-index: 10;
 }
 
-/* Elke slide ligt gestapeld over de sticky container */
 .ennu-slide {
   position: absolute;
   inset: 0;
@@ -258,7 +252,6 @@ body {
   pointer-events: auto;
 }
 
-/* Inhoud: kaart + tekst naast elkaar */
 .ennu-slide-inner {
   display: flex;
   align-items: center;
@@ -283,6 +276,16 @@ body {
 .ennu-caption {
   max-width: 300px;
   flex-shrink: 0;
+}
+
+/* Jaar boven het gouden streepje */
+.ennu-year-inline {
+  font-size: 3.2rem;
+  font-weight: bold;
+  color: rgba(203, 174, 73, 0.9);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 16px;
 }
 
 .ennu-caption-line {
@@ -401,8 +404,9 @@ body {
 
   .ennu-label { display: none; }
   .ennu-slide-inner { flex-direction: column; gap: 24px; padding: 0 5vw; }
-  .ennu-map { max-width: 85vw; max-height: 40vh; }
+  .ennu-map { max-width: 85vw; max-height: 38vh; }
   .ennu-caption { max-width: 85vw; }
+  .ennu-year-inline { font-size: 2.4rem; }
   .ennu-caption p { font-size: 0.95rem; }
 
   #data-verantwoording { padding: 60px 24px 80px; }
