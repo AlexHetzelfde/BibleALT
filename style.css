@@ -134,16 +134,6 @@ body {
 }
 
 /* =========================
-   SPACERS
-========================= */
-#ennu-spacer {
-  height: 700vh;
-}
-#exit-spacer {
-  height: 150vh;
-}
-
-/* =========================
    INFO SCENE
 ========================= */
 .scene {
@@ -218,23 +208,23 @@ body {
 }
 
 /* =========================
-   EN NU LAAG
+   EN NU SECTIE
+   Gewone documentflow, eigen
+   donkere achtergrond zodat de
+   fixed foto er niet doorheen schijnt
 ========================= */
-#ennu-layer {
-  position: fixed;
-  inset: 0;
+#ennu-section {
+  position: relative;
+  z-index: 1;
   background: #111;
-  z-index: 500;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateY(100vh);
-  will-change: transform;
 }
 
-#ennu-heading {
-  position: absolute;
-  top: 48px;
+.ennu-section-header {
+  text-align: center;
+  padding: 100px 0 20px;
+}
+
+.ennu-section-header h2 {
   font-family: Georgia, serif;
   font-size: 3rem;
   font-style: italic;
@@ -243,47 +233,43 @@ body {
   letter-spacing: 4px;
 }
 
-#ennu-year-label {
-  position: absolute;
-  top: 118px;
+.ennu-block {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 6vw;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.ennu-block.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ennu-year-label {
   font-size: 1.6rem;
   font-weight: bold;
   color: rgba(203, 174, 73, 0.65);
   letter-spacing: 3px;
-  transition: opacity 0.4s ease;
+  margin-bottom: 40px;
 }
 
-#ennu-photo-container {
-  position: absolute;
-  top: 170px;
-  bottom: 50px;
-  left: 0;
-  right: 0;
+.ennu-content {
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-.ennu-slide {
-  position: absolute;
-  inset: 0;
-  display: flex;
   justify-content: center;
-  align-items: center;
   gap: 5vw;
-  padding: 0 6vw;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  pointer-events: none;
-}
-.ennu-slide.active {
-  opacity: 1;
-  pointer-events: auto;
+  width: 100%;
+  max-width: 1100px;
 }
 
 .ennu-photo {
-  max-height: 100%;
-  max-width: 32vw;
+  max-height: 62vh;
+  max-width: 45vw;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -297,29 +283,11 @@ body {
   flex-shrink: 0;
 }
 
-.ennu-text-inner {
-  opacity: 0;
-  transform: translateX(30px);
-  transition: opacity 0.7s ease 0.5s, transform 0.7s ease 0.5s;
-}
-
-.ennu-slide.active .ennu-text-inner {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 .ennu-text-line {
   width: 48px;
   height: 2px;
   background: rgba(203, 174, 73, 0.8);
   margin-bottom: 20px;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.5s ease 0.8s;
-}
-
-.ennu-slide.active .ennu-text-line {
-  transform: scaleX(1);
 }
 
 .ennu-text p {
@@ -331,9 +299,53 @@ body {
 }
 
 /* =========================
+   DATA VERANTWOORDING
+========================= */
+#data-verantwoording {
+  position: relative;
+  z-index: 1;
+  background: #111;
+  padding: 80px 40px 100px;
+  border-top: 1px solid rgba(203, 174, 73, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#data-verantwoording h2 {
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  color: rgba(203, 174, 73, 0.95);
+  margin-bottom: 2rem;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+#data-verantwoording p {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  max-width: 680px;
+}
+
+#data-verantwoording ol {
+  max-width: 680px;
+  width: 100%;
+  padding-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#data-verantwoording ol li {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+/* =========================
    BRONNEN PAGINA
-   Staat buiten #story, gewone
-   document-flow zwarte pagina
 ========================= */
 #bronnen-page {
   position: relative;
@@ -346,6 +358,7 @@ body {
   align-items: center;
   padding: 80px 40px;
   text-align: center;
+  border-top: 1px solid rgba(203, 174, 73, 0.2);
 }
 
 #bronnen-page h2 {
@@ -395,25 +408,24 @@ body {
   .textbox { width: 85vw; font-size: 15px; padding: 20px; }
   .quote-box blockquote { font-size: 1.3rem; }
   .scene { padding: 40px 5vw; justify-content: center !important; }
-  #bronnen-page { padding: 60px 24px; }
-  #bronnen-page h2 { font-size: 1.5rem; }
 
-  .ennu-slide {
+  .ennu-content {
     flex-direction: column;
     gap: 24px;
-    padding: 0 6vw;
-    justify-content: center;
-    overflow-y: auto;
   }
   .ennu-photo {
-    max-width: 70vw;
-    max-height: 45vh;
+    max-width: 80vw;
+    max-height: 40vh;
   }
   .ennu-text {
     max-width: 85vw;
   }
   .ennu-text p { font-size: 0.95rem; }
-  #ennu-heading { font-size: 2rem; top: 32px; }
-  #ennu-year-label { font-size: 1.2rem; top: 88px; }
-  #ennu-photo-container { top: 130px; bottom: 20px; }
+  .ennu-section-header h2 { font-size: 2rem; }
+  .ennu-year-label { font-size: 1.2rem; }
+
+  #data-verantwoording { padding: 60px 24px 80px; }
+  #data-verantwoording h2 { font-size: 1.5rem; }
+  #bronnen-page { padding: 60px 24px; }
+  #bronnen-page h2 { font-size: 1.5rem; }
 }
