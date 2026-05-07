@@ -102,6 +102,7 @@
   </div>
 </div>
 
+<!-- STORY: alleen de scrollende scenes + ennu-spacer + exit-spacer -->
 <div id="story">
 
   <section class="scene" data-type="info" data-index="0" data-year="1500">
@@ -221,33 +222,34 @@
     </div>
   </section>
 
+  <!-- Spacer die de En Nu? animatie aandrijft -->
   <div id="ennu-spacer"></div>
 
-  <!-- BRONNEN: altijd zichtbaar, geen scrollama-animatie -->
-  <section class="scene" data-type="bronnen" data-year="1960">
-    <div class="bronnen-box">
-      <h2>Bronnenlijst</h2>
-      <ul>
-        <li><a href="https://nl.wikipedia.org/wiki/Biblebelt_(Nederland)" target="_blank">Wikipedia — Biblebelt (Nederland)</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Reformatie" target="_blank">Wikipedia — Reformatie</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Calvinisme" target="_blank">Wikipedia — Calvinisme</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Tachtigjarige_Oorlog" target="_blank">Wikipedia — Tachtigjarige Oorlog</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Inname_van_Den_Briel" target="_blank">Wikipedia — Inname van Den Briel</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Synode_van_Dordrecht" target="_blank">Wikipedia — Synode van Dordrecht</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Afscheiding_(1834)" target="_blank">Wikipedia — Afscheiding (1834)</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Doleantie" target="_blank">Wikipedia — Doleantie</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Abraham_Kuyper" target="_blank">Wikipedia — Abraham Kuyper</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Verzuiling" target="_blank">Wikipedia — Verzuiling</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Nederlandse_Hervormde_Kerk" target="_blank">Wikipedia — Nederlandse Hervormde Kerk</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Staatkundig_Gereformeerde_Partij" target="_blank">Wikipedia — Staatkundig Gereformeerde Partij (SGP)</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/ChristenUnie" target="_blank">Wikipedia — ChristenUnie</a></li>
-        <li><a href="https://nl.wikipedia.org/wiki/Ontkerkelijking_in_Nederland" target="_blank">Wikipedia — Ontkerkelijking in Nederland</a></li>
-      </ul>
-    </div>
-  </section>
+  <!-- Extra ruimte zodat de ennu-laag volledig kan faden vóór de bronnen -->
+  <div id="exit-spacer"></div>
 
-  <div id="exit-spacer" style="height: 100vh;"></div>
+</div>
+<!-- einde #story -->
 
+<!-- BRONNEN: volledig buiten #story, gewone zwarte pagina -->
+<div id="bronnen-page">
+  <h2>Bronnenlijst</h2>
+  <ul>
+    <li><a href="https://nl.wikipedia.org/wiki/Biblebelt_(Nederland)" target="_blank">Wikipedia — Biblebelt (Nederland)</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Reformatie" target="_blank">Wikipedia — Reformatie</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Calvinisme" target="_blank">Wikipedia — Calvinisme</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Tachtigjarige_Oorlog" target="_blank">Wikipedia — Tachtigjarige Oorlog</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Inname_van_Den_Briel" target="_blank">Wikipedia — Inname van Den Briel</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Synode_van_Dordrecht" target="_blank">Wikipedia — Synode van Dordrecht</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Afscheiding_(1834)" target="_blank">Wikipedia — Afscheiding (1834)</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Doleantie" target="_blank">Wikipedia — Doleantie</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Abraham_Kuyper" target="_blank">Wikipedia — Abraham Kuyper</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Verzuiling" target="_blank">Wikipedia — Verzuiling</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Nederlandse_Hervormde_Kerk" target="_blank">Wikipedia — Nederlandse Hervormde Kerk</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Staatkundig_Gereformeerde_Partij" target="_blank">Wikipedia — Staatkundig Gereformeerde Partij (SGP)</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/ChristenUnie" target="_blank">Wikipedia — ChristenUnie</a></li>
+    <li><a href="https://nl.wikipedia.org/wiki/Ontkerkelijking_in_Nederland" target="_blank">Wikipedia — Ontkerkelijking in Nederland</a></li>
+  </ul>
 </div>
 
 <script src="script.js"></script>
