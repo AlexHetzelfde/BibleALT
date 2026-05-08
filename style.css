@@ -60,7 +60,7 @@ body {
   top: 40px;
   left: 50px;
   z-index: 200;
-  font-size: 6rem;
+  font-size: 4rem;
   font-weight: bold;
   color: rgba(203, 174, 73, 0.8);
   pointer-events: none;
