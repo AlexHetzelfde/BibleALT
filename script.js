@@ -59,10 +59,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === EN NU: sticky scroll logica ===
   function updateEnnuSection(scrollTop) {
-    const sectionTop   = ennuSection.offsetTop;
+    const sectionTop    = ennuSection.offsetTop;
     const sectionHeight = ennuSection.offsetHeight;
-    const scrollRange  = sectionHeight - window.innerHeight;
-    const scrollInside = scrollTop - sectionTop;
+    const scrollRange   = sectionHeight - window.innerHeight;
+    const scrollInside  = scrollTop - sectionTop;
 
     if (scrollInside < 0 || scrollInside > scrollRange) return;
 
@@ -79,12 +79,11 @@ document.addEventListener("DOMContentLoaded", () => {
       lastEnnuIndex = slideIndex;
     }
 
-    // Groot jaartal linksboven verbergen — jaar staat in de caption
     yearDisplay.classList.remove("visible");
     navDotsContainer.classList.remove("visible");
   }
 
-  // === Verberg UI volledig bij data-verantwoording ===
+  // === Verberg UI bij data-verantwoording ===
   const dataSection = document.getElementById("data-verantwoording");
   if (dataSection) {
     const hideUiObserver = new IntersectionObserver((entries) => {
@@ -106,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (currentSceneTop !== null) {
       const activeSlide = document.querySelector(".bg-slide.active");
-      if (activeSlide && activeSlide.style.backgroundImage) {
+      if (activeSlide) {
         const relativeScroll = scrollTop - currentSceneTop;
         activeSlide.style.backgroundPositionY =
           `calc(50% + ${relativeScroll * 0.03}px)`;
@@ -171,31 +170,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA (alleen story) ===
+  // === SCROLLAMA (alleen story info-scenes) ===
   const scroller = scrollama();
   scroller
-    .setup({ step: ".scene", offset: 0.5, progress: true })
+    .setup({ step: ".scene[data-type='info']", offset: 0.5, progress: true })
     .onStepEnter(({ element }) => {
-      if (element.dataset.type === "info") {
-        const index = parseInt(element.dataset.index);
-        setBackground(index);
-        updateNavDots(index);
-        element.querySelector(".textbox").classList.add("visible");
-        currentSceneTop = element.offsetTop;
-        if (!locked) navDotsContainer.classList.add("visible");
-      } else if (element.dataset.type === "quote") {
-        element.querySelector(".quote-box").classList.add("visible");
-      }
-    })
-    .onStepExit(({ element }) => {
-      if (element.dataset.type === "info") {
-        element.querySelector(".textbox").classList.remove("visible");
-      } else if (element.dataset.type === "quote") {
-        element.querySelector(".quote-box").classList.remove("visible");
-      }
+      const index = parseInt(element.dataset.index);
+      setBackground(index);
+      updateNavDots(index);
+      currentSceneTop = element.offsetTop;
+      if (!locked) navDotsContainer.classList.add("visible");
     })
     .onStepProgress(({ element, progress }) => {
-      // Jaar alleen bijwerken als we buiten de ennu-sectie zijn
       const scrollTop     = window.scrollY;
       const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
