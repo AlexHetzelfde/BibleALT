@@ -1,47 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
+
   const landing          = document.getElementById("landing-layer");
   const bgSlides         = document.querySelectorAll(".bg-slide");
   const yearDisplay      = document.getElementById("year-display");
   const navDotsContainer = document.getElementById("nav-dots");
   const progressBar      = document.getElementById("progress-bar");
   const infoScenes       = document.querySelectorAll(".scene[data-type='info']");
-  const allScenes        = document.querySelectorAll(".scene");
   const ennuSection      = document.getElementById("ennu-section");
   const ennuSlides       = document.querySelectorAll(".ennu-slide");
 
-  let progress        = 0;
-  let locked          = true;
-  let currentSceneTop = null;
-  let lastEnnuIndex   = -1;
+  let progress      = 0;
+  let locked        = true;
+  let lastEnnuIndex = -1;
 
   document.body.style.overflow = "hidden";
 
-  // === NAV DOTS ===
+  // ── NAV DOTS ──────────────────────────────────────────
   infoScenes.forEach((scene) => {
     const dot = document.createElement("div");
     dot.classList.add("nav-dot");
-    dot.addEventListener("click", () => {
-      scene.scrollIntoView({ behavior: "smooth" });
-    });
+    dot.addEventListener("click", () =>
+      scene.scrollIntoView({ behavior: "smooth" })
+    );
     navDotsContainer.appendChild(dot);
   });
 
   function updateNavDots(index) {
-    document.querySelectorAll(".nav-dot").forEach((dot, i) => {
-      dot.classList.toggle("active", i === index);
-    });
+    document.querySelectorAll(".nav-dot").forEach((dot, i) =>
+      dot.classList.toggle("active", i === index)
+    );
   }
 
-  // === ACHTERGROND ===
-  // index 0-8  → gekleurde bg-slide actief
-  // index 99   → alle slides opacity 0 → witte body zichtbaar (video-modus)
+  // ── ACHTERGROND ───────────────────────────────────────
+  // index 0-8 → gekleurde bg-slide
+  // index 99  → geen enkele slide actief → witte body zichtbaar
   function setBackground(index) {
-    bgSlides.forEach((slide, i) => {
-      slide.classList.toggle("active", i === index);
-    });
+    bgSlides.forEach((slide, i) =>
+      slide.classList.toggle("active", i === index)
+    );
   }
 
-  // === INTRO GORDIJN ===
+  // ── INTRO GORDIJN ─────────────────────────────────────
   function setProgress(p) {
     progress = Math.max(0, Math.min(1, p));
     landing.style.transform = `translateY(-${progress * 100}vh)`;
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === EN NU: sticky scroll logica ===
+  // ── EN NU: STICKY SCROLL ──────────────────────────────
   function updateEnnuSection(scrollTop) {
     const sectionTop    = ennuSection.offsetTop;
     const sectionHeight = ennuSection.offsetHeight;
@@ -75,9 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (slideIndex !== lastEnnuIndex) {
-      ennuSlides.forEach((slide, i) => {
-        slide.classList.toggle("active", i === slideIndex);
-      });
+      ennuSlides.forEach((slide, i) =>
+        slide.classList.toggle("active", i === slideIndex)
+      );
       lastEnnuIndex = slideIndex;
     }
 
@@ -85,66 +84,31 @@ document.addEventListener("DOMContentLoaded", () => {
     navDotsContainer.classList.remove("visible");
   }
 
-  // === Verberg UI bij data-verantwoording ===
+  // ── DATA-VERANTWOORDING: UI VERBERGEN ─────────────────
   const dataSection = document.getElementById("data-verantwoording");
   if (dataSection) {
-    const hideUiObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          yearDisplay.classList.remove("visible");
-          navDotsContainer.classList.remove("visible");
-        }
-      });
-    }, { threshold: 0.05 });
-    hideUiObserver.observe(dataSection);
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            yearDisplay.classList.remove("visible");
+            navDotsContainer.classList.remove("visible");
+          }
+        });
+      },
+      { threshold: 0.05 }
+    ).observe(dataSection);
   }
 
-  // === SCROLL ===
+  // ── SCROLL ────────────────────────────────────────────
   window.addEventListener("scroll", () => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    progressBar.style.width = ((scrollTop / docHeight) * 100) + "%";
-
-    if (currentSceneTop !== null) {
-      const activeSlide = document.querySelector(".bg-slide.active");
-      if (activeSlide) {
-        const relativeScroll = scrollTop - currentSceneTop;
-        activeSlide.style.backgroundPositionY =
-          `calc(50% + ${relativeScroll * 0.03}px)`;
-      }
-    }
-
+    progressBar.style.width = (scrollTop / docHeight) * 100 + "%";
     updateEnnuSection(scrollTop);
   });
 
-  // === KEYBOARD ===
-  window.addEventListener("keydown", (e) => {
-    if (locked) {
-      if (e.key === "ArrowDown" || e.key === "PageDown") setProgress(progress + 0.15);
-      return;
-    }
-    if (e.key === "ArrowDown" || e.key === "PageDown") {
-      const currentScroll = window.scrollY;
-      for (let i = 0; i < allScenes.length; i++) {
-        if (allScenes[i].offsetTop > currentScroll + 10) {
-          allScenes[i].scrollIntoView({ behavior: "smooth" });
-          break;
-        }
-      }
-    }
-    if (e.key === "ArrowUp" || e.key === "PageUp") {
-      if (window.scrollY === 0) { setProgress(progress - 0.15); return; }
-      const currentScroll = window.scrollY;
-      for (let i = allScenes.length - 1; i >= 0; i--) {
-        if (allScenes[i].offsetTop < currentScroll - 10) {
-          allScenes[i].scrollIntoView({ behavior: "smooth" });
-          break;
-        }
-      }
-    }
-  });
-
-  // === WHEEL ===
+  // ── WHEEL ─────────────────────────────────────────────
   window.addEventListener("wheel", (e) => {
     if (locked) {
       e.preventDefault();
@@ -157,13 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === TOUCH ===
+  // ── TOUCH ─────────────────────────────────────────────
   let touchStartY = 0;
-  window.addEventListener("touchstart", e => {
+  window.addEventListener("touchstart", (e) => {
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
 
-  window.addEventListener("touchmove", e => {
+  window.addEventListener("touchmove", (e) => {
     if (locked) {
       e.preventDefault();
       const delta = touchStartY - e.touches[0].clientY;
@@ -172,23 +136,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // ============================================================
-  // SCROLLAMA 1: tekstscènes → gekleurde achtergrond
-  // ============================================================
-  const sceneScroller = scrollama();
-  sceneScroller
-    .setup({ step: ".scene[data-type='info']", offset: 0.5, progress: true })
+  // ── KEYBOARD ──────────────────────────────────────────
+  const allSteps = document.querySelectorAll(".scene[data-type='info'], .video-section");
+
+  window.addEventListener("keydown", (e) => {
+    if (locked) {
+      if (e.key === "ArrowDown" || e.key === "PageDown") setProgress(progress + 0.15);
+      return;
+    }
+    if (e.key === "ArrowDown" || e.key === "PageDown") {
+      const cur = window.scrollY;
+      for (const step of allSteps) {
+        if (step.offsetTop > cur + 10) { step.scrollIntoView({ behavior: "smooth" }); break; }
+      }
+    }
+    if (e.key === "ArrowUp" || e.key === "PageUp") {
+      if (window.scrollY === 0) { setProgress(progress - 0.15); return; }
+      const cur = window.scrollY;
+      const rev = [...allSteps].reverse();
+      for (const step of rev) {
+        if (step.offsetTop < cur - 10) { step.scrollIntoView({ behavior: "smooth" }); break; }
+      }
+    }
+  });
+
+  // ── SCROLLAMA: één instantie voor alles ───────────────
+  // Steps = tekstscènes + video-secties samen.
+  // onStepEnter  → wissel achtergrond
+  // onStepProgress → animeer het jaartal (alleen bij tekstscènes)
+  const scroller = scrollama();
+
+  scroller
+    .setup({
+      step: ".scene[data-type='info'], .video-section",
+      offset: 0.5,
+      progress: true,
+    })
     .onStepEnter(({ element }) => {
-      const index = parseInt(element.dataset.index);
-      setBackground(index);        // gekleurde bg-slide aan
-      updateNavDots(index);
-      currentSceneTop = element.offsetTop;
-      if (!locked) {
-        yearDisplay.classList.add("visible");
-        navDotsContainer.classList.add("visible");
+      if (element.classList.contains("video-section")) {
+        // VIDEO → alle slides uit → witte achtergrond
+        setBackground(99);
+        yearDisplay.classList.remove("visible");
+      } else {
+        // TEKSTSCÈNE → gekleurde achtergrond
+        const index = parseInt(element.dataset.index);
+        setBackground(index);
+        updateNavDots(index);
+        if (!locked) {
+          yearDisplay.classList.add("visible");
+          navDotsContainer.classList.add("visible");
+        }
       }
     })
     .onStepProgress(({ element, progress }) => {
+      // Alleen jaar animeren bij tekstscènes, niet bij video-secties
+      if (element.classList.contains("video-section")) return;
+
+      // Niet animeren terwijl "En nu?" sectie in beeld is
       const scrollTop     = window.scrollY;
       const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
@@ -196,33 +200,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const yearStart = parseInt(element.dataset.year);
 
-      // Zoek de volgende .scene, sla video-secties over
-      let nextScene = element.nextElementSibling;
-      while (nextScene && !nextScene.classList.contains("scene")) {
-        nextScene = nextScene.nextElementSibling;
+      // Zoek de volgende tekstscène (sla video-secties over)
+      let next = element.nextElementSibling;
+      while (next && !next.classList.contains("scene")) {
+        next = next.nextElementSibling;
       }
-      const yearEnd = nextScene && nextScene.dataset.year
-        ? parseInt(nextScene.dataset.year)
-        : yearStart;
-
+      const yearEnd = next && next.dataset.year ? parseInt(next.dataset.year) : yearStart;
       yearDisplay.textContent = Math.round(yearStart + (yearEnd - yearStart) * progress);
     });
 
-  // ============================================================
-  // SCROLLAMA 2: video-secties → witte achtergrond
-  // Roept setBackground(99) aan: index 99 bestaat niet,
-  // dus alle bg-slides worden opacity 0 → witte body zichtbaar.
-  // ============================================================
-  const videoScroller = scrollama();
-  videoScroller
-    .setup({ step: ".video-section", offset: 0.5 })
-    .onStepEnter(() => {
-      setBackground(99);
-      yearDisplay.classList.remove("visible");
-    });
+  window.addEventListener("resize", scroller.resize);
 
-  window.addEventListener("resize", () => {
-    sceneScroller.resize();
-    videoScroller.resize();
-  });
 });
