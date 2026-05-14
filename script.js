@@ -6,17 +6,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBar      = document.getElementById("progress-bar");
   const infoScenes       = document.querySelectorAll(".scene[data-type='info']");
   const allScenes        = document.querySelectorAll(".scene");
+  const allScenesArray   = Array.from(allScenes);
   const ennuSection      = document.getElementById("ennu-section");
   const ennuSlides       = document.querySelectorAll(".ennu-slide");
 
-  let progress      = 0;
-  let locked        = true;
+  let progress        = 0;
+  let locked          = true;
   let currentSceneTop = null;
-  let lastEnnuIndex = -1;
+  let lastEnnuIndex   = -1;
 
   document.body.style.overflow = "hidden";
 
-  // === NAV DOTS ===
+  // === NAV DOTS (alleen voor info-scenes) ===
   infoScenes.forEach((scene) => {
     const dot = document.createElement("div");
     dot.classList.add("nav-dot");
@@ -32,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === ACHTERGROND ===
+  // === ACHTERGROND (op basis van DOM-positie van de scene) ===
   function setBackground(index) {
     bgSlides.forEach((slide, i) => {
       slide.classList.toggle("active", i === index);
@@ -55,6 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
       yearDisplay.classList.remove("visible");
       navDotsContainer.classList.remove("visible");
     }
+  }
+
+  // === VIDEO: pauzeer videos die niet meer in beeld zijn ===
+  function pauseAllVideosExcept(activeScene) {
+    allScenes.forEach((scene) => {
+      if (scene === activeScene) return;
+      const video = scene.querySelector("video");
+      if (video && !video.paused) video.pause();
+    });
   }
 
   // === EN NU: sticky scroll logica ===
@@ -170,18 +180,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA (alleen story info-scenes) ===
+  // === SCROLLAMA (alle scenes — tekst én video) ===
   const scroller = scrollama();
   scroller
-    .setup({ step: ".scene[data-type='info']", offset: 0.5, progress: true })
+    .setup({ step: ".scene", offset: 0.5, progress: true })
     .onStepEnter(({ element }) => {
-      const index = parseInt(element.dataset.index);
-      setBackground(index);
-      updateNavDots(index);
+      // Achtergrond: gebruik de DOM-positie van de scene
+      const bgIndex = allScenesArray.indexOf(element);
+      setBackground(bgIndex);
       currentSceneTop = element.offsetTop;
-      if (!locked) navDotsContainer.classList.add("visible");
+
+      // Nav-dots: alleen bijwerken bij info-scenes
+      if (element.dataset.type === "info") {
+        const infoIndex = parseInt(element.dataset.index);
+        updateNavDots(infoIndex);
+        if (!locked) navDotsContainer.classList.add("visible");
+      }
+
+      // Year display tonen (niet tijdens video-scenes verbergen)
+      if (!locked) yearDisplay.classList.add("visible");
+
+      // Andere videos pauzeren
+      pauseAllVideosExcept(element);
     })
     .onStepProgress(({ element, progress }) => {
+      // Niet bijwerken als we in de ennu-sectie scrollen
       const scrollTop     = window.scrollY;
       const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
