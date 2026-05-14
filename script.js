@@ -58,12 +58,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === VIDEO: pauzeer videos die niet meer in beeld zijn ===
-  function pauseAllVideosExcept(activeScene) {
+  // === YOUTUBE: pauzeer iframes die niet meer in beeld zijn via postMessage ===
+  function pauseAllIframesExcept(activeScene) {
     allScenes.forEach((scene) => {
       if (scene === activeScene) return;
-      const video = scene.querySelector("video");
-      if (video && !video.paused) video.pause();
+      const iframe = scene.querySelector("iframe");
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: "pauseVideo", args: [] }),
+          "*"
+        );
+      }
     });
   }
 
@@ -197,11 +202,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!locked) navDotsContainer.classList.add("visible");
       }
 
-      // Year display tonen (niet tijdens video-scenes verbergen)
+      // Year display tonen
       if (!locked) yearDisplay.classList.add("visible");
 
-      // Andere videos pauzeren
-      pauseAllVideosExcept(element);
+      // Andere YouTube iframes pauzeren
+      pauseAllIframesExcept(element);
     })
     .onStepProgress(({ element, progress }) => {
       // Niet bijwerken als we in de ennu-sectie scrollen
