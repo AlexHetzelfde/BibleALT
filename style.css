@@ -55,7 +55,7 @@ body {
 }
 
 /* =========================
-   JAARTAL (kleiner, NOS rood)
+   JAARTAL
 ========================= */
 #year-display {
   position: fixed;
@@ -75,7 +75,7 @@ body {
 }
 
 /* =========================
-   NAV DOTS (NOS rood)
+   NAV DOTS
 ========================= */
 #nav-dots {
   position: fixed;
@@ -150,7 +150,7 @@ body {
 }
 
 /* =========================
-   TEKSTBOX (geen fade, altijd zichtbaar)
+   TEKSTBOX
 ========================= */
 .textbox {
   background: rgba(255, 255, 255, 0.95);
@@ -167,7 +167,47 @@ body {
 }
 
 /* =========================
-   EN NU INTRO (witte achtergrond, NOS stijl)
+   VIDEO-SCENE
+========================= */
+.video-scene {
+  justify-content: center;
+  align-items: center;
+}
+.video-scene.right {
+  justify-content: center;
+}
+
+.videobox {
+  width: 72%;
+  max-width: 860px;
+  border-left: 4px solid #CC0000;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+  background: #000;
+}
+
+.video-label {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(204, 0, 0, 0.75);
+  padding: 10px 16px 8px;
+  background: #0a0a0a;
+}
+
+.videobox video {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  object-fit: contain;
+  background: #000;
+}
+
+/* =========================
+   EN NU INTRO
 ========================= */
 #ennu-intro {
   position: relative;
@@ -213,7 +253,7 @@ body {
 }
 
 /* =========================
-   EN NU: STICKY SCROLL (witte achtergrond)
+   EN NU: STICKY SCROLL
 ========================= */
 #ennu-section {
   position: relative;
@@ -313,7 +353,7 @@ body {
 }
 
 /* =========================
-   DATA VERANTWOORDING (wit)
+   DATA VERANTWOORDING
 ========================= */
 #data-verantwoording {
   position: relative;
@@ -355,7 +395,7 @@ body {
 }
 
 /* =========================
-   BRONNEN PAGINA (wit)
+   BRONNEN PAGINA
 ========================= */
 #bronnen-page {
   position: relative;
@@ -408,6 +448,9 @@ body {
   #nav-dots { right: 12px; gap: 10px; }
   .textbox { width: 85vw; font-size: 15px; padding: 20px; }
   .scene { padding: 40px 5vw; justify-content: center !important; }
+
+  .videobox { width: 92vw; }
+  .videobox video { max-height: 50vh; }
 
   #ennu-intro { padding: 60px 24px 70px; }
   #ennu-intro h2 { font-size: 1.6rem; }
