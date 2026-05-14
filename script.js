@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const ennuSection      = document.getElementById("ennu-section");
   const ennuSlides       = document.querySelectorAll(".ennu-slide");
 
-  let progress      = 0;
-  let locked        = true;
+  let progress        = 0;
+  let locked          = true;
   let currentSceneTop = null;
-  let lastEnnuIndex = -1;
+  let lastEnnuIndex   = -1;
 
   document.body.style.overflow = "hidden";
 
@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // === ACHTERGROND ===
+  // index 0-8  → gekleurde bg-slide actief
+  // index 99   → alle slides opacity 0 → witte body zichtbaar (video-modus)
   function setBackground(index) {
     bgSlides.forEach((slide, i) => {
       slide.classList.toggle("active", i === index);
@@ -170,16 +172,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA (alleen story info-scenes) ===
-  const scroller = scrollama();
-  scroller
+  // ============================================================
+  // SCROLLAMA 1: tekstscènes → gekleurde achtergrond
+  // ============================================================
+  const sceneScroller = scrollama();
+  sceneScroller
     .setup({ step: ".scene[data-type='info']", offset: 0.5, progress: true })
     .onStepEnter(({ element }) => {
       const index = parseInt(element.dataset.index);
-      setBackground(index);
+      setBackground(index);        // gekleurde bg-slide aan
       updateNavDots(index);
       currentSceneTop = element.offsetTop;
-      if (!locked) navDotsContainer.classList.add("visible");
+      if (!locked) {
+        yearDisplay.classList.add("visible");
+        navDotsContainer.classList.add("visible");
+      }
     })
     .onStepProgress(({ element, progress }) => {
       const scrollTop     = window.scrollY;
@@ -188,17 +195,34 @@ document.addEventListener("DOMContentLoaded", () => {
       if (scrollTop >= sectionTop && scrollTop <= sectionBottom) return;
 
       const yearStart = parseInt(element.dataset.year);
-      const next      = element.nextElementSibling;
-      // Zoek de volgende scene (niet de video-section)
-      let nextScene = next;
-      while (nextScene && !nextScene.dataset.year) {
+
+      // Zoek de volgende .scene, sla video-secties over
+      let nextScene = element.nextElementSibling;
+      while (nextScene && !nextScene.classList.contains("scene")) {
         nextScene = nextScene.nextElementSibling;
       }
       const yearEnd = nextScene && nextScene.dataset.year
         ? parseInt(nextScene.dataset.year)
         : yearStart;
+
       yearDisplay.textContent = Math.round(yearStart + (yearEnd - yearStart) * progress);
     });
 
-  window.addEventListener("resize", scroller.resize);
+  // ============================================================
+  // SCROLLAMA 2: video-secties → witte achtergrond
+  // Roept setBackground(99) aan: index 99 bestaat niet,
+  // dus alle bg-slides worden opacity 0 → witte body zichtbaar.
+  // ============================================================
+  const videoScroller = scrollama();
+  videoScroller
+    .setup({ step: ".video-section", offset: 0.5 })
+    .onStepEnter(() => {
+      setBackground(99);
+      yearDisplay.classList.remove("visible");
+    });
+
+  window.addEventListener("resize", () => {
+    sceneScroller.resize();
+    videoScroller.resize();
+  });
 });
