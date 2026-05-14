@@ -178,8 +178,8 @@ body {
 }
 
 .videobox {
-  width: 72%;
-  max-width: 860px;
+  width: 88%;
+  max-width: 1000px;
   border-left: 4px solid #CC0000;
   border-radius: 2px;
   overflow: hidden;
@@ -198,11 +198,24 @@ body {
   background: #0a0a0a;
 }
 
-/* YouTube iframe vervangt de oude <video> tag */
-.videobox iframe {
-  display: block;
+/* =========================
+   VIDEO WRAPPER — betrouwbare 16:9 ratio
+   werkt in alle browsers, ook waar
+   aspect-ratio op iframes faalt
+========================= */
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   border: none;
   background: #000;
 }
