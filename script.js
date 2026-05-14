@@ -189,7 +189,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const yearStart = parseInt(element.dataset.year);
       const next      = element.nextElementSibling;
-      const yearEnd   = next && next.dataset.year ? parseInt(next.dataset.year) : yearStart;
+      // Zoek de volgende scene (niet de video-section)
+      let nextScene = next;
+      while (nextScene && !nextScene.dataset.year) {
+        nextScene = nextScene.nextElementSibling;
+      }
+      const yearEnd = nextScene && nextScene.dataset.year
+        ? parseInt(nextScene.dataset.year)
+        : yearStart;
       yearDisplay.textContent = Math.round(yearStart + (yearEnd - yearStart) * progress);
     });
 
