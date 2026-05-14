@@ -198,11 +198,12 @@ body {
   background: #0a0a0a;
 }
 
-.videobox video {
+/* YouTube iframe vervangt de oude <video> tag */
+.videobox iframe {
   display: block;
   width: 100%;
-  max-height: 72vh;
-  object-fit: contain;
+  aspect-ratio: 16 / 9;
+  border: none;
   background: #000;
 }
 
@@ -450,7 +451,6 @@ body {
   .scene { padding: 40px 5vw; justify-content: center !important; }
 
   .videobox { width: 92vw; }
-  .videobox video { max-height: 50vh; }
 
   #ennu-intro { padding: 60px 24px 70px; }
   #ennu-intro h2 { font-size: 1.6rem; }
