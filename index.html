@@ -18,13 +18,17 @@
   }
   .video-scene .video-wrapper {
     width: 100%;
-    max-width: 900px;
-    aspect-ratio: 16 / 9;
+    max-width: 960px;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
     border-radius: 2px;
     overflow: hidden;
   }
   .video-scene .video-wrapper iframe {
+    position: absolute;
+    top: 0; left: 0;
     width: 100%;
     height: 100%;
     border: none;
