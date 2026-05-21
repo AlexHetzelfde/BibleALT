@@ -14,11 +14,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 60px 5vw;
+    padding: 60px 6vw;
   }
   .video-scene .video-wrapper {
     width: 100%;
-    max-width: 960px;
     position: relative;
     padding-bottom: 56.25%;
     height: 0;
@@ -35,7 +34,8 @@
     display: block;
   }
   @media (max-width: 600px) {
-    .video-scene { padding: 40px 5vw; }
+    .video-scene { padding: 40px 0; }
+    .video-scene .video-wrapper { border-radius: 0; box-shadow: none; }
   }
 </style>
 </head>
