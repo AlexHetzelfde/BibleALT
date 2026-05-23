@@ -2,271 +2,1053 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>De Bijbelbelt</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://unpkg.com/scrollama"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+/* ────────────────────────────────────────────
+   RESET & ROOT
+──────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:         #171429;
+  --accent:     #009cde;
+  --white:      #ffffff;
+  --bubble-bg:  rgba(214, 238, 252, 0.97);
+  --bubble-text:#0d0d1a;
+  --card-w:     390px;
+  --card-h:     min(680px, 78vh);
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Source Sans 3', sans-serif;
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ────────────────────────────────────────────
+   TOP CHROME
+──────────────────────────────────────────── */
+#topbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background: linear-gradient(to bottom, rgba(23,20,41,0.9) 0%, transparent 100%);
+  pointer-events: none;
+}
+#topbar-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+#counter {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  background: rgba(0,0,0,0.55);
+  color: var(--white);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-family: 'Source Sans 3', sans-serif;
+  padding: 5px 11px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.5px;
+  transition: opacity 0.3s;
+}
+
+#year-tag {
+  position: fixed;
+  top: 44px;
+  left: 14px;
+  z-index: 200;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  letter-spacing: -0.5px;
+  pointer-events: none;
+}
+#year-tag.show { opacity: 1; }
+
+#progress-bar {
+  position: fixed;
+  bottom: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 300;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* ────────────────────────────────────────────
+   CAROUSEL STAGE
+──────────────────────────────────────────── */
+#stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ────────────────────────────────────────────
+   CARDS
+──────────────────────────────────────────── */
+.card {
+  position: absolute;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 20px;
+  overflow: hidden;
+  /* Center by default */
+  left: 50%;
+  top: 50%;
+  margin-left: calc(var(--card-w) / -2);
+  margin-top: calc(var(--card-h) / -2);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  transition:
+    transform  0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    opacity    0.52s ease,
+    filter     0.52s ease,
+    box-shadow 0.52s ease;
+  will-change: transform, opacity, filter;
+  cursor: pointer;
+}
+
+/* Active card — front and center */
+.card.is-active {
+  transform: scale(1);
+  opacity: 1;
+  filter: none;
+  z-index: 10;
+  cursor: default;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.72);
+}
+
+/* Side cards peek in ~150px from viewport edges */
+.card.is-prev {
+  transform: translateX(calc(-50vw + 60px - var(--card-w) * 0.44 + var(--card-w) / 2))
+             scale(0.87);
+  opacity: 0.55;
+  filter: blur(2.5px);
+  z-index: 5;
+}
+
+.card.is-next {
+  transform: translateX(calc(50vw - 60px + var(--card-w) * 0.44 - var(--card-w) / 2))
+             scale(0.87);
+  opacity: 0.55;
+  filter: blur(2.5px);
+  z-index: 5;
+}
+
+/* Far cards — completely hidden */
+.card.is-far {
+  transform: scale(0.75);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ────────────────────────────────────────────
+   CARD BACKGROUNDS (gradient per slide)
+──────────────────────────────────────────── */
+.card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+/* Subtle noise texture */
+.card-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.bg-cover { background: linear-gradient(160deg, #1a1535 0%, #0d1b50 55%, #090d28 100%); }
+.bg-1     { background: linear-gradient(155deg, #1d1130 0%, #2e1a52 60%, #120920 100%); }
+.bg-2     { background: linear-gradient(148deg, #101e42 0%, #162e62 55%, #0b1530 100%); }
+.bg-3     { background: linear-gradient(150deg, #201407 0%, #3e2508 55%, #180e04 100%); }
+.bg-4     { background: linear-gradient(155deg, #0b1d13 0%, #1b3e25 55%, #09110d 100%); }
+.bg-5     { background: linear-gradient(142deg, #1c1235 0%, #360d3a 55%, #180828 100%); }
+.bg-6     { background: linear-gradient(150deg, #1e0e0e 0%, #3a1515 55%, #160909 100%); }
+.bg-7     { background: linear-gradient(155deg, #081722 0%, #102e48 55%, #050f18 100%); }
+.bg-8     { background: linear-gradient(145deg, #18152a 0%, #302048 55%, #100c20 100%); }
+.bg-9     { background: linear-gradient(150deg, #10182a 0%, #18284e 55%, #080e1e 100%); }
+.bg-10    { background: linear-gradient(155deg, #121a28 0%, #1e2e48 55%, #0c1220 100%); }
+.bg-ennu  { background: linear-gradient(160deg, #171429 0%, #201856 55%, #130e26 100%); }
+.bg-video { background: radial-gradient(ellipse at center, #12101e 0%, #080810 100%); }
+.bg-end   { background: linear-gradient(160deg, #0f0d1e 0%, #171429 100%); }
+
+/* ────────────────────────────────────────────
+   CARD INNER CONTENT
+──────────────────────────────────────────── */
+.card-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── COVER CARD ── */
+.c-cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 32px;
+  height: 100%;
+  position: relative;
+}
+.c-cover .eyebrow {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+.c-cover h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 9vw, 4rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.05;
+  letter-spacing: -1px;
+  margin-bottom: 0;
+}
+.c-cover .rule {
+  width: 44px;
+  height: 3px;
+  background: var(--accent);
+  margin: 22px auto;
+}
+.c-cover .subtitle {
+  font-size: 1.02rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.65;
+  font-weight: 300;
+  max-width: 280px;
+  font-style: italic;
+}
+.c-cover .scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.c-cover .scroll-hint::before,
+.c-cover .scroll-hint::after {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+}
+/* Decorative cross watermark */
+.c-cover .deco-cross {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+/* ── STORY CARD ── */
+.c-story {
+  height: 100%;
+  position: relative;
+}
+/* Optional: replace with actual background images by setting
+   style="background-image: url('jouw-foto.jpg')" on .card-bg */
+.story-grid {
+  /* subtle geometric grid overlay */
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  background-image:
+    repeating-linear-gradient(0deg,
+      transparent, transparent 39px,
+      rgba(0,156,222,0.3) 39px, rgba(0,156,222,0.3) 40px),
+    repeating-linear-gradient(90deg,
+      transparent, transparent 39px,
+      rgba(0,156,222,0.3) 39px, rgba(0,156,222,0.3) 40px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Bubbles */
+.bubble {
+  position: absolute;
+  background: var(--bubble-bg);
+  color: var(--bubble-text);
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.72;
+  font-weight: 400;
+  font-family: 'Source Sans 3', sans-serif;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.28);
+  left: 18px;
+  right: 18px;
+  z-index: 3;
+}
+.bubble-top    { top: 22px; }
+.bubble-bottom { bottom: 28px; }
+.bubble-mid    { top: 50%; transform: translateY(-50%); }
+
+/* Triangle pointer on bubble */
+.bubble-top::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 22px;
+  border: 8px solid transparent;
+  border-bottom: 8px solid rgba(214,238,252,0.97);
+  border-top: none;
+}
+.bubble-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 22px;
+  border: 8px solid transparent;
+  border-top: 8px solid rgba(214,238,252,0.97);
+  border-bottom: none;
+}
+
+/* ── VIDEO CARD ── */
+.c-video {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 18px;
+  gap: 18px;
+}
+.video-wrap {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 36px rgba(0,0,0,0.55);
+  border: 1px solid rgba(0,156,222,0.18);
+  background: #000;
+  flex-shrink: 0;
+}
+.video-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.video-label {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.42);
+  text-align: center;
+  font-style: italic;
+  letter-spacing: 0.3px;
+}
+
+/* ── MAP CARD ── */
+.c-map {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.map-img-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #0d1020;
+}
+.map-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+.map-year {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  line-height: 1;
+}
+.map-caption {
+  background: var(--bubble-bg);
+  color: var(--bubble-text);
+  padding: 16px 18px;
+  font-size: 13px;
+  line-height: 1.68;
+  font-weight: 400;
+  font-family: 'Source Sans 3', sans-serif;
+  flex-shrink: 0;
+}
+.map-caption-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #006ea0;
+  margin-bottom: 5px;
+}
+
+/* ── SECTION CARD (En Nu) ── */
+.c-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 44px 30px;
+}
+.c-section .eyebrow {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.c-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 18px;
+}
+.c-section .rule {
+  width: 40px;
+  height: 3px;
+  background: var(--accent);
+  margin: 0 auto 20px;
+}
+.c-section p {
+  font-size: 0.97rem;
+  color: rgba(255,255,255,0.68);
+  line-height: 1.8;
+  font-weight: 300;
+}
+.c-section p strong { color: var(--accent); font-weight: 600; }
+
+/* ── END CARD ── */
+.c-end {
+  height: 100%;
+  padding: 32px 28px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,156,222,0.3) transparent;
+}
+.c-end h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 22px;
+  line-height: 1.15;
+}
+.c-end .end-block { margin-bottom: 26px; }
+.c-end .end-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  opacity: 0.75;
+}
+.c-end p {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 7px;
+}
+.c-end ol {
+  padding-left: 18px;
+}
+.c-end ol li {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 5px;
+}
+.c-end ul { list-style: none; }
+.c-end ul li {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding: 4px 0;
+}
+.c-end ul li a {
+  color: rgba(0,156,222,0.75);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.c-end ul li a:hover { color: var(--accent); }
+.c-end .end-thank {
+  font-size: 0.65rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+  text-align: center;
+  padding-top: 12px;
+}
+
+/* ────────────────────────────────────────────
+   NAVIGATION
+──────────────────────────────────────────── */
+#nav {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  z-index: 100;
+}
+.nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  color: var(--white);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s, opacity 0.25s;
+  backdrop-filter: blur(12px);
+  outline: none;
+  line-height: 1;
+}
+.nav-btn:hover { background: rgba(0,156,222,0.28); transform: scale(1.08); }
+.nav-btn:active { transform: scale(0.94); }
+.nav-btn:disabled { opacity: 0.25; cursor: default; transform: none; }
+
+/* Click zone for side cards */
+.side-click {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  z-index: 8;
+  cursor: pointer;
+}
+#click-prev { left: 0; }
+#click-next { right: 0; }
+
+/* ────────────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --card-w: min(92vw, 390px);
+    --card-h: min(74vh, 580px);
+  }
+  .card.is-prev,
+  .card.is-next {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #click-prev, #click-next { display: none; }
+}
+@media (max-height: 600px) {
+  :root { --card-h: min(85vh, 500px); }
+  .c-cover h1 { font-size: 2.8rem; }
+  .bubble { font-size: 13px; padding: 12px 16px; }
+}
+</style>
 </head>
 <body>
 
+<!-- Top chrome -->
+<div id="topbar"><span id="topbar-title">De Bijbelbelt</span></div>
+<div id="counter">1 / 27</div>
+<div id="year-tag">1800</div>
 <div id="progress-bar"></div>
 
-<div id="landing-layer">
-  <div class="landing-content">
-    <h1>De Bijbelbelt</h1>
-    <h2>Hoe een strook aan gemeenten in Nederland door de jaren heen veranderd</h2>
-  </div>
+<!-- Side click zones -->
+<div id="click-prev" class="side-click"></div>
+<div id="click-next" class="side-click"></div>
+
+<!-- Card stage -->
+<div id="stage"></div>
+
+<!-- Nav arrows -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" aria-label="Vorige">&#8592;</button>
+  <button class="nav-btn" id="btn-next" aria-label="Volgende">&#8594;</button>
 </div>
 
-<div id="year-display">1800</div>
-<div id="nav-dots"></div>
+<script>
+// ────────────────────────────────────────────
+//  SLIDE DATA
+// ────────────────────────────────────────────
+const slides = [
+  // 1 — COVER
+  { type: 'cover', year: '' },
 
-<div id="backgrounds">
-  <div class="bg-slide active"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-</div>
+  // 2 — Intro
+  { type: 'story', year: '1800', bg: 'bg-1',
+    bubbles: [
+      { pos: 'top',
+        text: 'De Bijbelbelt in Nederland: een religieus gebied dat niet zo oud is als vaak wordt gedacht, maar is ontstaan door politieke en sociale veranderingen in de 19e eeuw.' },
+      { pos: 'bottom',
+        text: 'Het verhaal laat zien hoe politieke keuzes invloed hebben op de lange termijn, en hoe de Bijbelbelt zelfs vandaag de dag nog steeds verandert.' }
+    ]},
 
-<!-- STORY -->
-<div id="story">
+  // 3 — Wat is de Bijbelbelt
+  { type: 'story', year: '1820', bg: 'bg-2',
+    bubbles: [
+      { pos: 'top',
+        text: 'De Bijbelbelt is bij veel Nederlanders bekend als een strook gemeenten in het midden van het land — een gebied met gereformeerde kerken, SGP-stemmers en reformatorische scholen.' },
+      { pos: 'bottom',
+        text: 'Maar het gebied is meer dan alleen een strook gelovigen. Zelfs binnen deze strook zijn er grote verschillen.' }
+    ]},
 
-  <section class="scene scene--intro" data-type="intro" data-year="1800">
-    <div class="textbox textbox--wide">
-      De Bijbelbelt in Nederland: een religieus gebied dat niet zo oud is als vaak wordt gedacht, maar is ontstaan door politieke en sociale veranderingen in de 19e eeuw. Het verhaal laat zien hoe politieke keuzes invloed hebben op de lange termijn in een gebied, en hoe de Bijbelbelt zelfs vandaag de dag nog steeds veranderd.
-    </div>
-  </section>
+  // 4 — Video 1
+  { type: 'video', year: '1820', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/Dx4mLE4lZ0A',
+    label: 'Teun op de Bijbelbelt — seizoen 1' },
 
-  <section class="scene" data-type="info" data-index="0" data-year="1820">
-    <div class="textbox">
-      De Bijbelbelt is bij veel Nederlanders bekend als een strook gemeenten ergens in het midden van het land. Een gebied met gereformeerde kerken, SGP-stemmers en reformatorische scholen. Maar het gebied is meer dan alleen een strook gelovigen, want zelfs binnen deze strook zijn er grote verschillen.
-    </div>
-  </section>
+  // 5 — Elite bestuur
+  { type: 'story', year: '1840', bg: 'bg-3',
+    bubbles: [
+      { pos: 'top',
+        text: 'De Bijbelbelt lijkt een oud fenomeen, maar is eigenlijk pas vrij recent gevormd — rond het begin van de negentiende eeuw.' },
+      { pos: 'bottom',
+        text: 'Nederland werd in die periode bestuurd door een kleine elite van regenten. Zij benoemden de burgemeesters, kozen de predikanten en bepaalden de koers van de hervormde kerk.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/Dx4mLE4lZ0A" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 6 — Video 2
+  { type: 'video', year: '1840', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/6ITh3bOqT1A', label: '' },
 
-  <section class="scene right" data-type="info" data-index="1" data-year="1840">
-    <div class="textbox">
-      De Bijbelbelt lijkt een oud fenomeen, maar is eigenlijk pas vrij recent gevormd. Hij ontstond rond het begin van de negentiende eeuw. Nederland werd in die periode feitelijk bestuurd door een kleine elite van regenten en adellijke families. Zij benoemden de burgemeesters, kozen de predikanten en bepaalden de koers van de hervormde kerk. Gewone burgers — arbeiders, boeren, kleine middenstanders — hadden daar niets over te zeggen.
-    </div>
-  </section>
+  // 7 — Kuyper
+  { type: 'story', year: '1860', bg: 'bg-4',
+    bubbles: [
+      { pos: 'top',
+        text: 'Die groeiende ontevredenheid had een organisator nodig. Die persoon was Abraham Kuyper.' },
+      { pos: 'bottom',
+        text: 'Hij zag dat er gelovigen waren die zich ongehoord voelden — mensen die niets hadden met die adellijke families. Hij begon daarom een tegenbeweging.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/6ITh3bOqT1A" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 8 — Video 3
+  { type: 'video', year: '1860', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/06JKom7EvJQ', label: '' },
 
-  <section class="scene" data-type="info" data-index="2" data-year="1860">
-    <div class="textbox">
-      Die groeiende ontevredenheid had een organisator nodig. Het liefst iemand die de verspreide onrust kon omzetten in een beweging. Die persoon was Abraham Kuyper. Hij zag dat er gelovigen waren die zich ongehoord voelden — gelovigen die niets hadden met die adellijke families. Hij begint daarom een tegenbeweging.
-    </div>
-  </section>
+  // 9 — Hervormde Kerk
+  { type: 'story', year: '1870', bg: 'bg-5',
+    bubbles: [
+      { pos: 'top',
+        text: 'De Nederlandse Hervormde Kerk was de staatskerk: opgericht en gestuurd door de gevestigde elite, met predikanten die door diezelfde elite werden benoemd.' },
+      { pos: 'bottom',
+        text: 'Kuyper sprak niet tot de geleerde bovenlaag, maar tot de kruidenier, de timmerman, de kleine boer. Zijn boodschap was helder: "Jullie geloof is het echte geloof — jullie zwijgen al lang genoeg."' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/06JKom7EvJQ" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 10 — Video 4
+  { type: 'video', year: '1870', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/pIyxmrLUuSw', label: '' },
 
-  <section class="scene right" data-type="info" data-index="3" data-year="1870">
-    <div class="textbox">
-      De Nederlandse Hervormde Kerk was in de negentiende eeuw de staatskerk: opgericht en gestuurd door de gevestigde elite, met predikanten die door diezelfde elite werden benoemd. Voor orthodoxe gelovigen was die kerk niet meer in lijn met hun geloof. Kuyper gaf die frustratie een stem. Hij sprak niet tot de geleerde bovenlaag, maar tot de kruidenier, de timmerman, de kleine boer. Zijn boodschap was eenvoudig: jullie geloof is het echte geloof, en jullie zwijgen al lang genoeg.
-    </div>
-  </section>
+  // 11 — Grondwetsherziening
+  { type: 'story', year: '1880', bg: 'bg-6',
+    bubbles: [
+      { pos: 'top',
+        text: 'Kuypers beweging viel samen met de grondwetsherziening van 1848. De jaren die volgden brachten stap voor stap meer kiesrecht voor meer Nederlanders.' },
+      { pos: 'bottom',
+        text: 'Voor het eerst moesten gewone burgers een keuze maken — op wie stem je? Kuyper had zijn achterban daar al op voorbereid.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/pIyxmrLUuSw" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 12 — Video 5
+  { type: 'video', year: '1880', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/TgHGjaER5Xc', label: '' },
 
-  <section class="scene" data-type="info" data-index="4" data-year="1880">
-    <div class="textbox">
-      Kuypers beweging viel samen met een belangrijke politieke ontwikkeling: de grondwetsherziening van 1848. De jaren die volgden brachten stap voor stap meer kiesrecht voor meer Nederlanders. Voor het eerst moesten gewone burgers daadwerkelijk een keuze maken — op wie stem je? Kuyper had zijn achterban daar al op voorbereid. Maar ook de socialisten en andere nieuwe partijen streden in diezelfde periode om de gunst van de nieuwe kiezers.
-    </div>
-  </section>
+  // 13 — Van Rooden
+  { type: 'story', year: '1886', bg: 'bg-7',
+    bubbles: [
+      { pos: 'top',
+        text: 'Dat de Bijbelbelt een product is van de late 19e eeuw is ook zichtbaar in het onderzoek van Van Rooden.' },
+      { pos: 'bottom',
+        text: 'Hij reconstrueerde hoe predikanten zich door de eeuwen heen verplaatsten. Als de Bijbelbelt ouder was geweest, hadden orthodoxe predikanten al in de 18e eeuw naar orthodoxe gemeenten getrokken. Maar dat bleek niet zo.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/TgHGjaER5Xc" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 14 — Video 6
+  { type: 'video', year: '1886', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/lUpHXvQ7iRk', label: '' },
 
-  <section class="scene right" data-type="info" data-index="5" data-year="1886">
-    <div class="textbox">
-      Dat de Bijbelbelt een product is van de late negentiende eeuw en niet van eeuwen daarvoor, is niet alleen zichtbaar in verkiezingsuitslagen. Van Rooden zocht het bewijs op een andere manier: door te reconstrueren hoe predikanten zich door de eeuwen heen tussen gemeenten verplaatsten. Als de Bijbelbelt al veel ouder was, zou je verwachten dat orthodoxe predikanten al in de achttiende eeuw vooral naar andere orthodoxe gemeenten trokken. Maar dat bleek niet het geval.
-    </div>
-  </section>
+  // 15 — Politieke geografie
+  { type: 'story', year: '1890', bg: 'bg-8',
+    bubbles: [
+      { pos: 'top',
+        text: 'Het idee dat één stemming een politieke geografie voor generaties vastlegt, is niet uniek voor de Bijbelbelt.' },
+      { pos: 'bottom',
+        text: 'Het meest sprekende voorbeeld komt uit Frankrijk, waar een stemming uit de vroege Revolutie tweehonderd jaar later nog steeds zichtbaar bleek op de politieke kaart.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/lUpHXvQ7iRk" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 16 — Video 7
+  { type: 'video', year: '1890', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/oboLBR3PU5E', label: '' },
 
-  <section class="scene" data-type="info" data-index="6" data-year="1890">
-    <div class="textbox">
-      Het idee dat één stemming een politieke geografie voor generaties vastlegt, is niet uniek voor de Bijbelbelt. Het patroon is eerder aangetoond door historici. Het meest sprekende voorbeeld komt uit Frankrijk, waar een stemming uit de vroege Revolutie tweehonderd jaar later nog steeds zichtbaar bleek op de politieke kaart.
-    </div>
-  </section>
+  // 17 — Ontkerkelijking
+  { type: 'story', year: '1960', bg: 'bg-9',
+    bubbles: [
+      { pos: 'top',
+        text: 'Vanaf de jaren zestig ontkerkelijkte Nederland in hoog tempo. Kerken raakten leeg, de verzuiling brokkelde af.' },
+      { pos: 'bottom',
+        text: 'Toch verdween de Bijbelbelt niet — hij concentreerde zich juist. Wie er nog bij hoorde, trok dichter naar elkaar toe. Mede aangedreven door iets zo alledaags als de schoolkeuze.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/oboLBR3PU5E" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 18 — Video 8
+  { type: 'video', year: '1960', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/kqmSt4Fw8ww', label: '' },
 
-  <section class="scene right" data-type="info" data-index="7" data-year="1960">
-    <div class="textbox">
-      Vanaf de jaren zestig ontkerkelijkte Nederland in hoog tempo. Kerken raakten leeg, de verzuiling brokkelde af en de greep van religie op het dagelijks leven nam sterk af. Ook de Bijbelbelt ontkwam daar niet aan. Toch verdween de Bijbelbelt niet — hij concentreerde zich juist. Wie er nog wél bij hoorde, trok dichter naar elkaar toe. Dat proces werd mede aangedreven door iets zo alledaags als de keuze voor een school.
-    </div>
-  </section>
+  // 19 — Vandaag
+  { type: 'story', year: '2000', bg: 'bg-10',
+    bubbles: [
+      { pos: 'top',
+        text: 'Ook vandaag de dag is de Bijbelbelt herkenbaar, maar ze dunt langzaam uit door de verdere ontkerkelijking van Nederland.' },
+      { pos: 'bottom',
+        text: 'Tegelijkertijd neemt de concentratie binnen de Bijbelbelt zelf juist toe. De reden ligt in een bewuste gezinsbeslissing — over de school van hun kinderen.' }
+    ]},
 
-  <div class="video-scene">
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/kqmSt4Fw8ww" allowfullscreen></iframe>
-    </div>
-  </div>
+  // 20 — EN NU sectie-intro
+  { type: 'section', year: '2000', bg: 'bg-ennu',
+    eyebrow: 'En nu?',
+    title: 'De Bijbelbelt zichtbaar in stemgedrag',
+    text: 'Sinds 1922 doet de <strong>SGP</strong> mee aan de landelijke verkiezingen. Keer op keer tekent dezelfde diagonale strook zich af: van Zeeland tot de Veluwe. De Bijbelbelt in cijfers.' },
 
-  <section class="scene" data-type="info" data-index="8" data-year="2000">
-    <div class="textbox">
-      Ook vandaag de dag is de Bijbelbelt herkenbaar, maar ze dunt langzaam uit door de ontkerkelijking van Nederland. Tegelijkertijd gebeurt er iets nieuws: binnen de Bijbelbelt zelf neemt de concentratie juist toe. De reden daarvoor ligt in een beslissing die veel gezinnen bewust nemen — over de school van hun kinderen.
-    </div>
-  </section>
+  // 21 — Kaart 1961
+  { type: 'map', year: '1961', src: 'Foto/Foto10.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'Rond 1961 is het nog voornamelijk de CU die stemmen binnenhaalt, maar de vorm van de Bijbelbelt is al duidelijk terug te zien in de uitslag per gemeente.' },
 
-</div>
+  // 22 — Kaart 1998
+  { type: 'map', year: '1998', src: 'Foto/Foto11.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'In 1998 haalt de SGP veel stemmen. De diagonale strook van Zeeland tot de Veluwe wordt goed zichtbaar in het stemgedrag.' },
 
-<!-- INTRO VOOR DATA -->
-<div id="ennu-intro">
-  <div class="ennu-intro-inner">
-    <div class="ennu-intro-label">En nu?</div>
-    <h2>De Bijbelbelt zichtbaar in stemgedrag</h2>
-    <p>
-      De religieuze geografie van Nederland laat zich ook aflezen uit de politiek.
-      Sinds 1922 doet de <strong>SGP</strong> — de Staatkundig Gereformeerde Partij — mee aan de
-      landelijke verkiezingen. De kaarten hieronder tonen het SGP-stemgedrag per gemeente
-      door de decennia heen. Keer op keer tekent dezelfde diagonale strook zich af:
-      van Zeeland tot de Veluwe. De Bijbelbelt in cijfers.
-    </p>
-  </div>
-</div>
+  // 23 — Kaart 2010
+  { type: 'map', year: '2010', src: 'Foto/Foto12.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'Het aantal stemmen voor de SGP daalt lichtelijk, maar de vorm blijft herkenbaar. De band tussen geloof en stemgedrag is nog steeds sterk.' },
 
-<!-- EN NU: sticky scroll sectie -->
-<div id="ennu-section">
-  <div class="ennu-sticky">
-    <div class="ennu-label">Stemgedrag SGP per gemeente</div>
+  // 24 — Kaart 2017
+  { type: 'map', year: '2017', src: 'Foto/Foto13.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'Het stemgedrag verschuift lichtelijk per gemeente, maar de vorm van de Bijbelbelt is goed herkenbaar in de uitslag.' },
 
-    <div class="ennu-slide active" data-year="1961">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto10.jpg" alt="1961" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">1961</div>
-          <div class="ennu-caption-line"></div>
-          <p>Sinds 1922 doet de SGP mee aan de landelijke verkiezingen. Rond 1961 is het nog voornamelijk de CU die stemmen binnenhaalt, maar de vorm van de Bijbelbelt is al terug te zien in de uitslag per gemeente.</p>
-        </div>
-      </div>
-    </div>
+  // 25 — Kaart 2021
+  { type: 'map', year: '2021', src: 'Foto/Foto14.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'Ook in 2021 blijft het patroon stabiel. De Bijbelbelt tekent zich keer op keer af, dwars door politieke verschuivingen heen.' },
 
-    <div class="ennu-slide" data-year="1998">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto11.jpg" alt="1998" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">1998</div>
-          <div class="ennu-caption-line"></div>
-          <p>In 1998 haalt de SGP veel stemmen en wordt de vorm van de Bijbelbelt duidelijk zichtbaar in het stemgedrag.</p>
-        </div>
-      </div>
-    </div>
+  // 26 — Kaart 2025
+  { type: 'map', year: '2025', src: 'Foto/Foto15.jpg',
+    label: 'Stemgedrag SGP per gemeente',
+    caption: 'Tot op heden is de Bijbelbelt herkenbaar. Ondanks secularisatie elders in Nederland blijft deze regio trouw aan haar orthodox-protestantse traditie.' },
 
-    <div class="ennu-slide" data-year="2010">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto12.jpg" alt="2010" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">2010</div>
-          <div class="ennu-caption-line"></div>
-          <p>Het aantal stemmen voor de SGP daalt lichtelijk, maar de vorm blijft herkenbaar. De band tussen geloof en stemgedrag is nog steeds sterk aanwezig.</p>
-        </div>
-      </div>
-    </div>
+  // 27 — Einde / bronnen
+  { type: 'end', year: '' }
+];
 
-    <div class="ennu-slide" data-year="2017">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto13.jpg" alt="2017" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">2017</div>
-          <div class="ennu-caption-line"></div>
-          <p>Over de jaren heen verschuift het stemgedrag lichtelijk per gemeente, maar de vorm van de Bijbelbelt is goed herkenbaar in de uitslag.</p>
-        </div>
-      </div>
-    </div>
+const TOTAL = slides.length; // 27
 
-    <div class="ennu-slide" data-year="2021">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto14.jpg" alt="2021" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">2021</div>
-          <div class="ennu-caption-line"></div>
-          <p>Ook in 2021 blijft het patroon stabiel. De Bijbelbelt tekent zich keer op keer af in de verkiezingsuitslag, dwars door politieke verschuivingen heen.</p>
-        </div>
-      </div>
-    </div>
+// ────────────────────────────────────────────
+//  BUILD CARD DOM
+// ────────────────────────────────────────────
+function buildCard(s, index) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.index = index;
 
-    <div class="ennu-slide" data-year="2025">
-      <div class="ennu-slide-inner">
-        <img class="ennu-map" src="Foto/Foto15.jpg" alt="2025" />
-        <div class="ennu-caption">
-          <div class="ennu-year-inline">2025</div>
-          <div class="ennu-caption-line"></div>
-          <p>Tot op heden is de Bijbelbelt herkenbaar in het stemgedrag. Ondanks secularisatie elders in Nederland blijft deze regio trouw aan haar orthodox-protestantse traditie.</p>
-        </div>
-      </div>
-    </div>
+  // Background
+  const bgDiv = document.createElement('div');
+  bgDiv.className = 'card-bg';
+  if (s.bg) bgDiv.classList.add(s.bg);
+  card.appendChild(bgDiv);
 
-  </div>
-</div>
+  // Inner
+  const inner = document.createElement('div');
+  inner.className = 'card-inner';
 
-<!-- DATA VERANTWOORDING -->
-<div id="data-verantwoording">
-  <h2>Dataverantwoording</h2>
-  <p>
-    De data is opgehaald van de website verkiezinguitslagen.nl en verwerkt in de Nederlandse kaart.
-    Deze kaart hanteert de gemeentegrenzen zoals die in 2026 bekend zijn. Om toch de kleinere
-    gemeenten te verwerken die inmiddels zijn opgeheven, is het volgende gedaan:
-  </p>
-  <ol>
-    <li>Eerst is gekeken welke gemeenten ontbreken op de kaart, maar in dat jaar wel bestonden.</li>
-    <li>Vervolgens is gekeken bij welke gemeente ze zijn gefuseerd, of waar ze nu onder vallen.</li>
-    <li>Die stemmen zijn vervolgens bij de gemeente van 2026 opgeteld.</li>
-  </ol>
-</div>
+  switch (s.type) {
 
-<!-- BRONNEN -->
-<div id="bronnen-page">
-  <h2>Bronnenlijst</h2>
-  <ul>
-    <li>Peter van Rooden</li>
-    <li><a href="https://npo.nl/start/serie/teun-op-de-biblebelt/afleveringen/seizoen-1" target="_blank">NPO Start — Teun op de Biblebelt, seizoen 1</a></li>
-    <li><a href="https://www.nrc.nl/nieuws/1992/06/13/de-religieuze-verdeling-van-nederland-7146526-a831697" target="_blank">NRC — De religieuze verdeling van Nederland (1992)</a></li>
-    <li><a href="https://nl.wikipedia.org/wiki/Bijbelgordel" target="_blank">Wikipedia — Bijbelgordel</a></li>
-    <li><a href="https://www.quest.nl/maatschappij/cultuur/a41088345/waarom-loopt-er-een-biblebelt-dwars-door-nederland/" target="_blank">Quest — Waarom loopt er een biblebelt dwars door Nederland?</a></li>
-    <li><a href="https://www.nationalgeographic.nl/cultuur-samenleving/a65906817/wat-is-de-bijbelgordel-biblebelt" target="_blank">National Geographic NL — Wat is de bijbelgordel?</a></li>
-    <li><a href="https://www.uu.nl/achtergrond/wat-is-de-biblebelt-eigenlijk" target="_blank">Universiteit Utrecht — Wat is de biblebelt eigenlijk?</a></li>
-    <li><a href="https://www.youtube.com/watch?v=Y3bT2J1AXCg" target="_blank">YouTube — fragment over de Bijbelbelt</a></li>
-    <li><a href="https://historiek.net/biblebelt-bevindelijk-gereformeerden/92425/" target="_blank">Historiek.net — Biblebelt en bevindelijk gereformeerden</a></li>
-  </ul>
-</div>
+    case 'cover': {
+      inner.innerHTML = `
+        <div class="c-cover">
+          <svg class="deco-cross" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="90" y="10" width="20" height="180" fill="white"/>
+            <rect x="10" y="70" width="180" height="20" fill="white"/>
+          </svg>
+          <div class="eyebrow">Een verhaal over geloof & politiek</div>
+          <h1>De<br>Bijbelbelt</h1>
+          <div class="rule"></div>
+          <p class="subtitle">Hoe een strook gemeenten in Nederland door de jaren heen veranderde</p>
+          <div class="scroll-hint">gebruik de pijlen om te navigeren</div>
+        </div>`;
+      bgDiv.classList.add('bg-cover');
+      break;
+    }
 
-<script src="script.js"></script>
+    case 'story': {
+      inner.innerHTML = `
+        <div class="c-story">
+          <div class="story-grid"></div>
+          ${s.bubbles.map(b => `
+            <div class="bubble bubble-${b.pos}">${b.text}</div>
+          `).join('')}
+        </div>`;
+      break;
+    }
+
+    case 'video': {
+      inner.innerHTML = `
+        <div class="c-video">
+          <div class="video-wrap">
+            <iframe src="${s.src}?enablejsapi=1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+              allowfullscreen></iframe>
+          </div>
+          ${s.label ? `<div class="video-label">${s.label}</div>` : ''}
+        </div>`;
+      break;
+    }
+
+    case 'map': {
+      inner.innerHTML = `
+        <div class="c-map">
+          <div class="map-img-wrap">
+            <img src="${s.src}" alt="SGP stemgedrag ${s.year}" loading="lazy">
+            <div class="map-year">${s.year}</div>
+          </div>
+          <div class="map-caption">
+            <div class="map-caption-label">${s.label}</div>
+            ${s.caption}
+          </div>
+        </div>`;
+      bgDiv.style.display = 'none'; // image takes over
+      card.style.background = '#0d1020';
+      break;
+    }
+
+    case 'section': {
+      inner.innerHTML = `
+        <div class="c-section">
+          <div class="eyebrow">${s.eyebrow}</div>
+          <h2>${s.title}</h2>
+          <div class="rule"></div>
+          <p>${s.text}</p>
+        </div>`;
+      break;
+    }
+
+    case 'end': {
+      inner.innerHTML = `
+        <div class="c-end">
+          <h2>Dataverantwoording &amp; bronnen</h2>
+
+          <div class="end-block">
+            <div class="end-label">Dataverantwoording</div>
+            <p>De data is opgehaald van verkiezinguitslagen.nl en verwerkt in de Nederlandse kaart met gemeentegrenzen van 2026.</p>
+            <p>Om kleinere, inmiddels opgeheven gemeenten mee te nemen is het volgende gedaan:</p>
+            <ol>
+              <li>Gekeken welke gemeenten ontbreken maar in dat jaar wél bestonden.</li>
+              <li>Nagegaan bij welke gemeente ze zijn gefuseerd.</li>
+              <li>Die stemmen opgeteld bij de gemeente van 2026.</li>
+            </ol>
+          </div>
+
+          <div class="end-block">
+            <div class="end-label">Bronnen</div>
+            <ul>
+              <li>Peter van Rooden</li>
+              <li><a href="https://npo.nl/start/serie/teun-op-de-biblebelt/afleveringen/seizoen-1" target="_blank">NPO Start — Teun op de Biblebelt</a></li>
+              <li><a href="https://www.nrc.nl/nieuws/1992/06/13/de-religieuze-verdeling-van-nederland-7146526-a831697" target="_blank">NRC — De religieuze verdeling van Nederland (1992)</a></li>
+              <li><a href="https://nl.wikipedia.org/wiki/Bijbelgordel" target="_blank">Wikipedia — Bijbelgordel</a></li>
+              <li><a href="https://www.quest.nl/maatschappij/cultuur/a41088345/waarom-loopt-er-een-biblebelt-dwars-door-nederland/" target="_blank">Quest — Waarom loopt er een biblebelt door Nederland?</a></li>
+              <li><a href="https://www.nationalgeographic.nl/cultuur-samenleving/a65906817/wat-is-de-bijbelgordel-biblebelt" target="_blank">National Geographic NL — Wat is de bijbelgordel?</a></li>
+              <li><a href="https://www.uu.nl/achtergrond/wat-is-de-biblebelt-eigenlijk" target="_blank">Universiteit Utrecht — Wat is de biblebelt?</a></li>
+              <li><a href="https://historiek.net/biblebelt-bevindelijk-gereformeerden/92425/" target="_blank">Historiek.net — Biblebelt en bevindelijk gereformeerden</a></li>
+            </ul>
+          </div>
+
+          <div class="end-thank">De Bijbelbelt · 2026</div>
+        </div>`;
+      break;
+    }
+  }
+
+  card.appendChild(inner);
+  return card;
+}
+
+// ────────────────────────────────────────────
+//  RENDER ALL CARDS
+// ────────────────────────────────────────────
+const stage = document.getElementById('stage');
+const cardEls = slides.map((s, i) => {
+  const el = buildCard(s, i);
+  stage.appendChild(el);
+  return el;
+});
+
+// ────────────────────────────────────────────
+//  STATE & UPDATE
+// ────────────────────────────────────────────
+let current = 0;
+
+function posClass(i) {
+  const d = i - current;
+  if (d === 0)  return 'is-active';
+  if (d === -1) return 'is-prev';
+  if (d === 1)  return 'is-next';
+  return 'is-far';
+}
+
+function update() {
+  cardEls.forEach((el, i) => {
+    el.className = 'card ' + posClass(i);
+  });
+
+  // Counter
+  document.getElementById('counter').textContent = `${current + 1} / ${TOTAL}`;
+
+  // Year tag
+  const yr = slides[current].year;
+  const ytEl = document.getElementById('year-tag');
+  if (yr) {
+    ytEl.textContent = yr;
+    ytEl.classList.add('show');
+  } else {
+    ytEl.classList.remove('show');
+  }
+
+  // Progress bar
+  document.getElementById('progress-bar').style.width =
+    ((current + 1) / TOTAL * 100) + '%';
+
+  // Nav buttons
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === TOTAL - 1;
+
+  // Pause any iframes not in current card
+  pauseOtherVideos();
+}
+
+function go(dir) {
+  const next = current + dir;
+  if (next < 0 || next >= TOTAL) return;
+  current = next;
+  update();
+}
+
+// ────────────────────────────────────────────
+//  VIDEO PAUSE
+// ────────────────────────────────────────────
+function pauseOtherVideos() {
+  cardEls.forEach((el, i) => {
+    if (i === current) return;
+    const iframe = el.querySelector('iframe');
+    if (iframe && iframe.contentWindow) {
+      try {
+        iframe.contentWindow.postMessage(
+          JSON.stringify({ event: 'command', func: 'pauseVideo', args: [] }), '*'
+        );
+      } catch(e) {}
+    }
+  });
+}
+
+// ────────────────────────────────────────────
+//  CLICK HANDLERS
+// ────────────────────────────────────────────
+document.getElementById('btn-prev').addEventListener('click', () => go(-1));
+document.getElementById('btn-next').addEventListener('click', () => go(1));
+document.getElementById('click-prev').addEventListener('click', () => go(-1));
+document.getElementById('click-next').addEventListener('click', () => go(1));
+
+// Click on side cards to navigate
+stage.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const idx = parseInt(card.dataset.index);
+  if (card.classList.contains('is-prev')) go(-1);
+  else if (card.classList.contains('is-next')) go(1);
+});
+
+// ────────────────────────────────────────────
+//  KEYBOARD
+// ────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    go(-1);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  go(1);
+});
+
+// ────────────────────────────────────────────
+//  TOUCH SWIPE
+// ────────────────────────────────────────────
+let txStart = 0;
+document.addEventListener('touchstart', e => {
+  txStart = e.touches[0].clientX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = txStart - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 48) go(dx > 0 ? 1 : -1);
+}, { passive: true });
+
+// ────────────────────────────────────────────
+//  INIT
+// ────────────────────────────────────────────
+update();
+</script>
 </body>
 </html>
