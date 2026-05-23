@@ -1,18 +1,28 @@
 /* =========================
    RESET
 ========================= */
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+
+:root {
+  --bg:      #171429;
+  --accent:  #009cde;
+  --white:   #ffffff;
+  --text:    #000000;
+}
+
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   overflow-x: hidden;
+  background: var(--bg);
+  color: var(--white);
 }
 
 /* =========================
-   PROGRESS BAR (NOS rood)
+   PROGRESS BAR
 ========================= */
 #progress-bar {
   position: fixed;
@@ -20,13 +30,13 @@ body {
   left: 0;
   height: 3px;
   width: 0%;
-  background: #CC0000;
+  background: var(--accent);
   z-index: 10000;
   transition: width 0.1s linear;
 }
 
 /* =========================
-   INTRO GORDIJN (wit)
+   INTRO GORDIJN
 ========================= */
 #landing-layer {
   position: fixed;
@@ -34,25 +44,27 @@ body {
   left: 0;
   width: 100%;
   height: 100vh;
-  background: #ffffff;
-  color: #1a1a1a;
+  background: var(--bg);
+  color: var(--white);
   z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   will-change: transform;
-  border-bottom: 4px solid #CC0000;
+  border-bottom: 3px solid var(--accent);
   padding: 0 24px;
 }
 #landing-layer h1 {
   font-size: 4rem;
+  font-weight: 800;
   margin-bottom: 1rem;
-  color: #1a1a1a;
+  color: var(--white);
+  letter-spacing: -1px;
 }
 #landing-layer h2 {
-  font-size: 1.4rem;
-  color: #CC0000;
+  font-size: 1.3rem;
+  color: var(--accent);
   font-weight: 400;
   max-width: 600px;
   line-height: 1.5;
@@ -67,16 +79,14 @@ body {
   left: 40px;
   z-index: 200;
   font-size: 3rem;
-  font-weight: bold;
-  color: #CC0000;
+  font-weight: 800;
+  color: var(--accent);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.8s ease;
   letter-spacing: -1px;
 }
-#year-display.visible {
-  opacity: 1;
-}
+#year-display.visible { opacity: 1; }
 
 /* =========================
    NAV DOTS
@@ -93,28 +103,25 @@ body {
   opacity: 0;
   transition: opacity 0.8s ease;
 }
-#nav-dots.visible {
-  opacity: 1;
-}
+#nav-dots.visible { opacity: 1; }
+
 .nav-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
   cursor: pointer;
   transition: background 0.3s, transform 0.3s;
 }
-.nav-dot:hover {
-  transform: scale(1.4);
-}
+.nav-dot:hover { transform: scale(1.4); }
 .nav-dot.active {
-  background: #CC0000;
-  border-color: #CC0000;
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 /* =========================
-   VASTE ACHTERGRONDEN
+   ACHTERGROND
 ========================= */
 #backgrounds {
   position: fixed;
@@ -125,11 +132,10 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0;
+  background: var(--bg);
   transition: opacity 1s ease;
 }
-.bg-slide.active {
-  opacity: 1;
-}
+.bg-slide.active { opacity: 1; }
 
 /* =========================
    STORY
@@ -140,7 +146,7 @@ body {
 }
 
 /* =========================
-   SCENE (algemeen)
+   SCENE
 ========================= */
 .scene {
   min-height: 100vh;
@@ -149,64 +155,79 @@ body {
   justify-content: flex-end;
   padding: 60px 5vw;
 }
-.scene.right {
-  justify-content: flex-start;
-}
+.scene.right { justify-content: flex-start; }
+.scene--intro { justify-content: center; }
 
-/* Intro scene: breed en gecentreerd */
-.scene--intro {
+/* =========================
+   VIDEO SCENE
+========================= */
+.video-scene {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  padding: 60px 6vw;
+}
+.video-wrapper {
+  width: 100%;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0,156,222,0.25);
+}
+.video-wrapper iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 
 /* =========================
-   TEKSTBOX — basisstijl
+   TEKSTBOX
 ========================= */
 .textbox {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 30px;
-  border-left: 4px solid #CC0000;
-  border-radius: 2px;
+  background: var(--accent);
+  color: var(--text);
+  padding: 24px 28px;
+  border-radius: 14px;
   width: 340px;
   max-width: 80%;
-  font-size: 18px;
-  line-height: 1.7;
-  color: #1a1a1a;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  font-size: 17px;
+  line-height: 1.65;
+  font-weight: 500;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
 
-  /* Beginstand: rechts van beeld (voor scenes met justify-content: flex-end) */
   opacity: 0;
   transform: translateX(80px);
   transition:
-    opacity 0.6s ease,
+    opacity  0.6s ease,
     transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-
-/* Linker boxjes schuiven van links */
 .scene.right .textbox {
   transform: translateX(-80px);
   margin-left: 5vw;
 }
-
 .scene.right .textbox.is-visible {
   margin-left: 5vw;
 }
-
-/* Intro/center box schuift van onder */
 .scene--intro .textbox {
   transform: translateY(40px);
 }
-
-/* Zichtbaar (toegevoegd via JS) */
 .textbox.is-visible {
   opacity: 1;
   transform: translate(0, 0);
 }
-
-/* Brede intro-textbox */
 .textbox--wide {
   width: 700px;
   max-width: 88vw;
-  font-size: 19px;
+  font-size: 18px;
 }
 
 /* =========================
@@ -216,67 +237,14 @@ body {
   display: inline-block;
   width: 2px;
   height: 1em;
-  background: #CC0000;
+  background: var(--text);
   margin-left: 2px;
   vertical-align: text-bottom;
   animation: tw-blink 0.65s step-end infinite;
 }
-
 @keyframes tw-blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
-}
-
-/* =========================
-   VIDEO-SCENE
-========================= */
-.video-scene {
-  justify-content: center;
-  align-items: center;
-}
-.video-scene.right {
-  justify-content: center;
-}
-
-.videobox {
-  width: 88%;
-  max-width: 1000px;
-  border-left: 4px solid #CC0000;
-  border-radius: 2px;
-  overflow: hidden;
-  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
-  background: #000;
-}
-
-.video-label {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 0.7rem;
-  font-weight: bold;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: rgba(204, 0, 0, 0.75);
-  padding: 10px 16px 8px;
-  background: #0a0a0a;
-}
-
-/* =========================
-   VIDEO WRAPPER — betrouwbare 16:9 ratio
-========================= */
-.video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-}
-
-.video-wrapper iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: #000;
 }
 
 /* =========================
@@ -285,45 +253,37 @@ body {
 #ennu-intro {
   position: relative;
   z-index: 1;
-  background: #ffffff;
+  background: var(--bg);
   padding: 80px 40px 90px;
-  border-top: 4px solid #CC0000;
+  border-top: 3px solid var(--accent);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
 }
-
 .ennu-intro-label {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: #CC0000;
+  color: var(--accent);
   margin-bottom: 18px;
 }
-
 #ennu-intro h2 {
-  font-family: Georgia, serif;
   font-size: 2.2rem;
-  color: #1a1a1a;
+  font-weight: 800;
+  color: var(--white);
   margin-bottom: 1.4rem;
   max-width: 680px;
   line-height: 1.3;
 }
-
 #ennu-intro p {
-  font-family: Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   line-height: 1.85;
-  color: #333333;
+  color: rgba(255,255,255,0.75);
   max-width: 640px;
 }
-
-#ennu-intro p strong {
-  color: #CC0000;
-}
+#ennu-intro p strong { color: var(--accent); }
 
 /* =========================
    EN NU: STICKY SCROLL
@@ -331,11 +291,10 @@ body {
 #ennu-section {
   position: relative;
   z-index: 1;
-  background: #ffffff;
+  background: var(--bg);
   height: 700vh;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(0,156,222,0.2);
 }
-
 .ennu-sticky {
   position: sticky;
   top: 0;
@@ -345,22 +304,20 @@ body {
   align-items: center;
   justify-content: center;
 }
-
 .ennu-label {
   position: absolute;
   top: 36px;
   left: 50%;
   transform: translateX(-50%);
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: rgba(204, 0, 0, 0.5);
+  color: rgba(0,156,222,0.5);
   pointer-events: none;
   z-index: 10;
+  white-space: nowrap;
 }
-
 .ennu-slide {
   position: absolute;
   inset: 0;
@@ -375,7 +332,6 @@ body {
   opacity: 1;
   pointer-events: auto;
 }
-
 .ennu-slide-inner {
   display: flex;
   align-items: center;
@@ -385,44 +341,36 @@ body {
   width: 100%;
   padding: 0 6vw;
 }
-
 .ennu-map {
   max-height: 68vh;
   max-width: 52vw;
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 2px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 10px 50px rgba(0,0,0,0.5);
   flex-shrink: 0;
+  border: 1px solid rgba(0,156,222,0.2);
 }
-
-.ennu-caption {
-  max-width: 300px;
-  flex-shrink: 0;
-}
-
+.ennu-caption { max-width: 300px; flex-shrink: 0; }
 .ennu-year-inline {
   font-size: 3.2rem;
-  font-weight: bold;
-  color: #CC0000;
+  font-weight: 800;
+  color: var(--accent);
   letter-spacing: -1px;
   line-height: 1;
   margin-bottom: 16px;
 }
-
 .ennu-caption-line {
   width: 48px;
   height: 3px;
-  background: #CC0000;
+  background: var(--accent);
   margin-bottom: 20px;
 }
-
 .ennu-caption p {
-  font-family: Georgia, serif;
-  font-size: 1.05rem;
-  line-height: 1.85;
-  color: #333333;
+  font-size: 1.02rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.8);
 }
 
 /* =========================
@@ -431,23 +379,22 @@ body {
 #data-verantwoording {
   position: relative;
   z-index: 1;
-  background: #ffffff;
+  background: var(--bg);
   padding: 80px 40px 100px;
-  border-top: 4px solid #CC0000;
+  border-top: 3px solid var(--accent);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 #data-verantwoording h2 {
-  font-family: Georgia, serif;
   font-size: 2rem;
-  color: #1a1a1a;
+  font-weight: 800;
+  color: var(--white);
   margin-bottom: 2rem;
-  letter-spacing: 1px;
   text-align: center;
 }
 #data-verantwoording p {
-  color: #333333;
+  color: rgba(255,255,255,0.75);
   font-size: 1rem;
   line-height: 1.8;
   margin-bottom: 1.5rem;
@@ -462,7 +409,7 @@ body {
   gap: 12px;
 }
 #data-verantwoording ol li {
-  color: #333333;
+  color: rgba(255,255,255,0.75);
   font-size: 1rem;
   line-height: 1.8;
 }
@@ -473,7 +420,7 @@ body {
 #bronnen-page {
   position: relative;
   z-index: 1;
-  background: #f5f5f5;
+  background: #0f0d1f;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -481,14 +428,13 @@ body {
   align-items: center;
   padding: 80px 40px;
   text-align: center;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(0,156,222,0.2);
 }
 #bronnen-page h2 {
-  font-family: Georgia, serif;
   font-size: 2rem;
-  color: #1a1a1a;
+  font-weight: 800;
+  color: var(--white);
   margin-bottom: 2rem;
-  letter-spacing: 1px;
 }
 #bronnen-page ul {
   list-style: none;
@@ -499,58 +445,54 @@ body {
   width: 100%;
 }
 #bronnen-page ul li a {
-  color: #333333;
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
   font-size: 1rem;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid #CC0000;
+  border-bottom: 1px solid var(--accent);
   padding-bottom: 4px;
   transition: color 0.3s;
 }
-#bronnen-page ul li a:hover {
-  color: #CC0000;
+#bronnen-page ul li a:hover { color: var(--accent); }
+#bronnen-page ul li:not(:has(a)) {
+  color: rgba(255,255,255,0.7);
+  font-size: 1rem;
 }
 
 /* =========================
    MOBIEL
 ========================= */
 @media (max-width: 600px) {
-  #year-display { font-size: 2rem; top: 16px; left: 16px; }
+  #year-display  { font-size: 2rem; top: 16px; left: 16px; }
   #landing-layer h1 { font-size: 2.5rem; }
   #landing-layer h2 { font-size: 1.1rem; }
   #nav-dots { right: 12px; gap: 10px; }
 
-  /* Op mobiel schuiven alle boxjes van onder (simpler dan van de zijkant) */
   .textbox {
     width: 85vw;
     font-size: 15px;
-    padding: 20px;
+    padding: 18px;
     transform: translateY(40px);
   }
-  .scene.right .textbox {
-    transform: translateY(40px);
-  }
+  .scene.right .textbox,
   .scene--intro .textbox {
     transform: translateY(40px);
   }
-  .textbox--wide {
-    font-size: 15px;
-  }
-
+  .textbox--wide { font-size: 15px; }
   .scene { padding: 40px 5vw; justify-content: center !important; }
 
-  .videobox { width: 92vw; }
+  .video-scene { padding: 40px 0; }
+  .video-wrapper { border-radius: 0; box-shadow: none; }
 
   #ennu-intro { padding: 60px 24px 70px; }
   #ennu-intro h2 { font-size: 1.6rem; }
-  #ennu-intro p { font-size: 0.97rem; }
+  #ennu-intro p  { font-size: 0.97rem; }
 
-  .ennu-label { display: none; }
+  .ennu-label    { display: none; }
   .ennu-slide-inner { flex-direction: column; gap: 24px; padding: 0 5vw; }
-  .ennu-map { max-width: 85vw; max-height: 38vh; }
-  .ennu-caption { max-width: 85vw; }
+  .ennu-map      { max-width: 85vw; max-height: 38vh; }
+  .ennu-caption  { max-width: 85vw; }
   .ennu-year-inline { font-size: 2.4rem; }
-  .ennu-caption p { font-size: 0.95rem; }
+  .ennu-caption p   { font-size: 0.95rem; }
 
   #data-verantwoording { padding: 60px 24px 80px; }
   #data-verantwoording h2 { font-size: 1.5rem; }
