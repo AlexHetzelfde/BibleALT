@@ -43,6 +43,7 @@ body {
   text-align: center;
   will-change: transform;
   border-bottom: 4px solid #CC0000;
+  padding: 0 24px;
 }
 #landing-layer h1 {
   font-size: 4rem;
@@ -50,8 +51,11 @@ body {
   color: #1a1a1a;
 }
 #landing-layer h2 {
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: #CC0000;
+  font-weight: 400;
+  max-width: 600px;
+  line-height: 1.5;
 }
 
 /* =========================
@@ -149,8 +153,13 @@ body {
   justify-content: flex-start;
 }
 
+/* Intro scene: breed en gecentreerd */
+.scene--intro {
+  justify-content: center;
+}
+
 /* =========================
-   TEKSTBOX
+   TEKSTBOX — basisstijl
 ========================= */
 .textbox {
   background: rgba(255, 255, 255, 0.95);
@@ -163,7 +172,54 @@ body {
   line-height: 1.7;
   color: #1a1a1a;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+
+  /* Beginstand: rechts van beeld (voor scenes met justify-content: flex-end) */
+  opacity: 0;
+  transform: translateX(80px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Linker boxjes schuiven van links */
+.scene.right .textbox {
+  transform: translateX(-80px);
+}
+
+/* Intro/center box schuift van onder */
+.scene--intro .textbox {
+  transform: translateY(40px);
+}
+
+/* Zichtbaar (toegevoegd via JS) */
+.textbox.is-visible {
   opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Brede intro-textbox */
+.textbox--wide {
+  width: 700px;
+  max-width: 88vw;
+  font-size: 19px;
+}
+
+/* =========================
+   TYPEWRITER CURSOR
+========================= */
+.tw-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #CC0000;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: tw-blink 0.65s step-end infinite;
+}
+
+@keyframes tw-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 /* =========================
@@ -200,12 +256,10 @@ body {
 
 /* =========================
    VIDEO WRAPPER — betrouwbare 16:9 ratio
-   werkt in alle browsers, ook waar
-   aspect-ratio op iframes faalt
 ========================= */
 .video-wrapper {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
 }
@@ -458,9 +512,26 @@ body {
 @media (max-width: 600px) {
   #year-display { font-size: 2rem; top: 16px; left: 16px; }
   #landing-layer h1 { font-size: 2.5rem; }
-  #landing-layer h2 { font-size: 1.3rem; }
+  #landing-layer h2 { font-size: 1.1rem; }
   #nav-dots { right: 12px; gap: 10px; }
-  .textbox { width: 85vw; font-size: 15px; padding: 20px; }
+
+  /* Op mobiel schuiven alle boxjes van onder (simpler dan van de zijkant) */
+  .textbox {
+    width: 85vw;
+    font-size: 15px;
+    padding: 20px;
+    transform: translateY(40px);
+  }
+  .scene.right .textbox {
+    transform: translateY(40px);
+  }
+  .scene--intro .textbox {
+    transform: translateY(40px);
+  }
+  .textbox--wide {
+    font-size: 15px;
+  }
+
   .scene { padding: 40px 5vw; justify-content: center !important; }
 
   .videobox { width: 92vw; }
