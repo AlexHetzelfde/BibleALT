@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.style.overflow = "hidden";
 
-  // === NAV DOTS (alleen voor info-scenes) ===
+  // === NAV DOTS ===
   infoScenes.forEach((scene) => {
     const dot = document.createElement("div");
     dot.classList.add("nav-dot");
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === ACHTERGROND (op basis van DOM-positie van de scene) ===
   function setBackground(index) {
     bgSlides.forEach((slide, i) => {
       slide.classList.toggle("active", i === index);
@@ -50,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.overflow = "auto";
       yearDisplay.classList.add("visible");
       navDotsContainer.classList.add("visible");
-      // Start textbox animaties zodra het gordijn weg is
       if (!textboxsInited) {
         textboxsInited = true;
         initTextboxAnimations();
@@ -64,20 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // =============================================
-  // TEXTBOX ANIMATIES: slide-in + typewriter
-  // =============================================
+  // === TEXTBOX ANIMATIES ===
   function initTextboxAnimations() {
     const textboxes = document.querySelectorAll(".textbox");
-
     textboxes.forEach((box) => {
-      // 1. Meet de natuurlijke hoogte voor later
       const naturalHeight = box.offsetHeight;
-      // 2. Sla de volledige tekst op
       box.dataset.fullText = box.textContent.trim();
-      // 3. Zet een min-height zodat de box niet inklapt als tekst leeg is
       box.style.minHeight = naturalHeight + "px";
-      // 4. Leeg de box (typewriter vult hem later)
       box.textContent = "";
     });
 
@@ -86,9 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !entry.target.dataset.animated) {
             entry.target.dataset.animated = "true";
-            // Stap 1: slide de box in positie
             entry.target.classList.add("is-visible");
-            // Stap 2: start typewriter na de slide-animatie (~650ms)
             setTimeout(() => {
               typewriterEffect(entry.target, entry.target.dataset.fullText);
             }, 500);
@@ -97,13 +86,11 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       { threshold: 0.3 }
     );
-
     textboxes.forEach((box) => observer.observe(box));
   }
 
   function typewriterEffect(element, text, speed = 14) {
     let i = 0;
-    // Maak een tekstnode en een cursor-element
     const textNode = document.createTextNode("");
     const cursor   = document.createElement("span");
     cursor.className = "tw-cursor";
@@ -117,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
         i++;
         setTimeout(type, speed);
       } else {
-        // Cursor verdwijnt zacht na voltooiing
         cursor.style.transition = "opacity 0.4s";
         cursor.style.opacity    = "0";
         setTimeout(() => cursor.remove(), 450);
@@ -126,9 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type();
   }
 
-  // =============================================
-  // YOUTUBE: pauzeer iframes via postMessage
-  // =============================================
+  // === YOUTUBE PAUZE ===
   function pauseAllIframesExcept(activeScene) {
     allScenes.forEach((scene) => {
       if (scene === activeScene) return;
@@ -142,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === EN NU: sticky scroll logica ===
+  // === EN NU ===
   function updateEnnuSection(scrollTop) {
     const sectionTop    = ennuSection.offsetTop;
     const sectionHeight = ennuSection.offsetHeight;
@@ -168,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     navDotsContainer.classList.remove("visible");
   }
 
-  // === Verberg UI bij data-verantwoording ===
+  // === VERBERG UI BIJ DATA-SECTIE ===
   const dataSection = document.getElementById("data-verantwoording");
   if (dataSection) {
     const hideUiObserver = new IntersectionObserver((entries) => {
@@ -187,16 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrollTop = window.scrollY;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
     progressBar.style.width = ((scrollTop / docHeight) * 100) + "%";
-
-    if (currentSceneTop !== null) {
-      const activeSlide = document.querySelector(".bg-slide.active");
-      if (activeSlide) {
-        const relativeScroll = scrollTop - currentSceneTop;
-        activeSlide.style.backgroundPositionY =
-          `calc(50% + ${relativeScroll * 0.03}px)`;
-      }
-    }
-
     updateEnnuSection(scrollTop);
   });
 
@@ -245,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("touchstart", e => {
     touchStartY = e.touches[0].clientY;
   }, { passive: true });
-
   window.addEventListener("touchmove", e => {
     if (locked) {
       e.preventDefault();
@@ -255,10 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // =============================================
-  // SCROLLAMA — jaar-interpolatie (fix voor
-  // video-scenes zonder data-year)
-  // =============================================
+  // === SCROLLAMA ===
   const scroller = scrollama();
   scroller
     .setup({ step: ".scene", offset: 0.5, progress: true })
@@ -272,28 +242,21 @@ document.addEventListener("DOMContentLoaded", () => {
         updateNavDots(infoIndex);
         if (!locked) navDotsContainer.classList.add("visible");
       }
-
       if (!locked) yearDisplay.classList.add("visible");
-
       pauseAllIframesExcept(element);
     })
     .onStepProgress(({ element, progress: stepProgress }) => {
-      // Niet bijwerken als we in de ennu-sectie scrollen
       const scrollTop     = window.scrollY;
       const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
       if (scrollTop >= sectionTop && scrollTop <= sectionBottom) return;
 
       const yearStart = parseInt(element.dataset.year) || 0;
-
-      // Zoek het EERSTVOLGENDE .scene element met een data-year
-      // (slaat video-scenes en andere tussenliggende elementen over)
       let nextEl = element.nextElementSibling;
       while (nextEl && (!nextEl.classList.contains("scene") || !nextEl.dataset.year)) {
         nextEl = nextEl.nextElementSibling;
       }
-      const yearEnd = nextEl ? (parseInt(nextEl.dataset.year) || yearStart) : yearStart;
-
+      const yearEnd    = nextEl ? (parseInt(nextEl.dataset.year) || yearStart) : yearStart;
       const interpolated = Math.round(yearStart + (yearEnd - yearStart) * stepProgress);
       yearDisplay.textContent = interpolated;
     });
