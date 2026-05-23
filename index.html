@@ -180,7 +180,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.055;
+  opacity: 0.35;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .bg-cover { background: linear-gradient(160deg, #1a1535 0%, #0d1b50 55%, #090d28 100%); }
@@ -664,7 +664,7 @@ const slides = [
   { type: 'cover', year: '' },
 
   // 2 — Intro
-  { type: 'story', year: '1800', bg: 'bg-1',
+  { type: 'story', year: '1800', bg: 'bg-1', img: 'FotoV2/Foto1.jpg',
     bubbles: [
       { pos: 'top',
         text: 'De Bijbelbelt in Nederland: een religieus gebied dat niet zo oud is als vaak wordt gedacht, maar is ontstaan door politieke en sociale veranderingen in de 19e eeuw.' },
@@ -673,12 +673,10 @@ const slides = [
     ]},
 
   // 3 — Wat is de Bijbelbelt
-  { type: 'story', year: '1820', bg: 'bg-2',
+  { type: 'story', year: '1820', bg: 'bg-2', img: 'FotoV2/Foto2.jpg',
     bubbles: [
       { pos: 'top',
-        text: 'De Bijbelbelt is bij veel Nederlanders bekend als een strook gemeenten in het midden van het land — een gebied met gereformeerde kerken, SGP-stemmers en reformatorische scholen.' },
-      { pos: 'bottom',
-        text: 'Maar het gebied is meer dan alleen een strook gelovigen. Zelfs binnen deze strook zijn er grote verschillen.' }
+        text: 'De Bijbelbelt is bij veel Nederlanders bekend als een strook gemeenten in het midden van het land — een gebied met gereformeerde kerken, SGP-stemmers en reformatorische scholen. Maar het gebied is meer dan alleen een strook gelovigen. Zelfs binnen deze strook zijn er grote verschillen.' }
     ]},
 
   // 4 — Video 1
@@ -687,7 +685,7 @@ const slides = [
     label: 'Teun op de Bijbelbelt — seizoen 1' },
 
   // 5 — Elite bestuur
-  { type: 'story', year: '1840', bg: 'bg-3',
+  { type: 'story', year: '1840', bg: 'bg-3', img: 'FotoV2/Foto3.jpg',
     bubbles: [
       { pos: 'top',
         text: 'De Bijbelbelt lijkt een oud fenomeen, maar is eigenlijk pas vrij recent gevormd — rond het begin van de negentiende eeuw.' },
@@ -700,7 +698,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/6ITh3bOqT1A', label: '' },
 
   // 7 — Kuyper
-  { type: 'story', year: '1860', bg: 'bg-4',
+  { type: 'story', year: '1860', bg: 'bg-4', img: 'FotoV2/Foto4.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Die groeiende ontevredenheid had een organisator nodig. Die persoon was Abraham Kuyper.' },
@@ -713,7 +711,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/06JKom7EvJQ', label: '' },
 
   // 9 — Hervormde Kerk
-  { type: 'story', year: '1870', bg: 'bg-5',
+  { type: 'story', year: '1870', bg: 'bg-5', img: 'FotoV2/Foto5.jpg',
     bubbles: [
       { pos: 'top',
         text: 'De Nederlandse Hervormde Kerk was de staatskerk: opgericht en gestuurd door de gevestigde elite, met predikanten die door diezelfde elite werden benoemd.' },
@@ -726,7 +724,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/pIyxmrLUuSw', label: '' },
 
   // 11 — Grondwetsherziening
-  { type: 'story', year: '1880', bg: 'bg-6',
+  { type: 'story', year: '1880', bg: 'bg-6', img: 'FotoV2/Foto6.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Kuypers beweging viel samen met de grondwetsherziening van 1848. De jaren die volgden brachten stap voor stap meer kiesrecht voor meer Nederlanders.' },
@@ -739,7 +737,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/TgHGjaER5Xc', label: '' },
 
   // 13 — Van Rooden
-  { type: 'story', year: '1886', bg: 'bg-7',
+  { type: 'story', year: '1886', bg: 'bg-7', img: 'FotoV2/Foto7.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Dat de Bijbelbelt een product is van de late 19e eeuw is ook zichtbaar in het onderzoek van Van Rooden.' },
@@ -752,7 +750,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/lUpHXvQ7iRk', label: '' },
 
   // 15 — Politieke geografie
-  { type: 'story', year: '1890', bg: 'bg-8',
+  { type: 'story', year: '1890', bg: 'bg-8', img: 'FotoV2/Foto8.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Het idee dat één stemming een politieke geografie voor generaties vastlegt, is niet uniek voor de Bijbelbelt.' },
@@ -765,7 +763,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/oboLBR3PU5E', label: '' },
 
   // 17 — Ontkerkelijking
-  { type: 'story', year: '1960', bg: 'bg-9',
+  { type: 'story', year: '1960', bg: 'bg-9', img: 'FotoV2/Foto9.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Vanaf de jaren zestig ontkerkelijkte Nederland in hoog tempo. Kerken raakten leeg, de verzuiling brokkelde af.' },
@@ -778,7 +776,7 @@ const slides = [
     src: 'https://www.youtube.com/embed/kqmSt4Fw8ww', label: '' },
 
   // 19 — Vandaag
-  { type: 'story', year: '2000', bg: 'bg-10',
+  { type: 'story', year: '2000', bg: 'bg-10', img: 'FotoV2/Foto10.jpg',
     bubbles: [
       { pos: 'top',
         text: 'Ook vandaag de dag is de Bijbelbelt herkenbaar, maar ze dunt langzaam uit door de verdere ontkerkelijking van Nederland.' },
@@ -838,9 +836,15 @@ function buildCard(s, index) {
 
   // Background
   const bgDiv = document.createElement('div');
-  bgDiv.className = 'card-bg';
-  if (s.bg) bgDiv.classList.add(s.bg);
-  card.appendChild(bgDiv);
+bgDiv.className = 'card-bg';
+if (s.img) {
+  bgDiv.style.backgroundImage = `url('${s.img}')`;
+  bgDiv.style.backgroundSize = 'cover';
+  bgDiv.style.backgroundPosition = 'center';
+} else if (s.bg) {
+  bgDiv.classList.add(s.bg);
+}
+card.appendChild(bgDiv);
 
   // Inner
   const inner = document.createElement('div');
