@@ -17,10 +17,10 @@
   --bg:         #171429;
   --accent:     #009cde;
   --white:      #ffffff;
-  --bubble-bg:  rgba(214, 238, 252, 0.97);
+  --bubble-bg:  rgba(0, 156, 222, 0.22);
   --bubble-text:#0d0d1a;
-  --card-w:     390px;
-  --card-h:     min(680px, 78vh);
+  --card-w:     520px;
+  --card-h:     min(820px, 88vh);
 }
 
 body {
@@ -49,10 +49,10 @@ body {
   pointer-events: none;
 }
 #topbar-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: rgba(255,255,255,0.7);
+  font-family: Arial, sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
@@ -334,7 +334,7 @@ body {
   bottom: -8px;
   left: 22px;
   border: 8px solid transparent;
-  border-top: 8px solid rgba(214,238,252,0.97);
+  border-top: 8px solid rgba(0,156,222,0.22);
   border-bottom: none;
 }
 .bubble-bottom::after {
@@ -343,7 +343,7 @@ body {
   top: -8px;
   left: 22px;
   border: 8px solid transparent;
-  border-bottom: 8px solid rgba(214,238,252,0.97);
+  border-bottom: 8px solid rgba(0,156,222,0.22);
   border-top: none;
 }
 /* ── VIDEO CARD ── */
@@ -542,12 +542,18 @@ body {
 ──────────────────────────────────────────── */
 #nav {
   position: fixed;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
   display: flex;
-  gap: 14px;
+  justify-content: space-between;
+  padding: 0 calc(50% - var(--card-w)/2 - 64px);
   z-index: 100;
+  pointer-events: none;
+}
+.nav-btn {
+  pointer-events: auto;
 }
 .nav-btn {
   width: 48px;
