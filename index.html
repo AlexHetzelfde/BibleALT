@@ -19,7 +19,7 @@
   --white:      #ffffff;
   --bubble-bg:  #87baf4;
   --bubble-text:#0d0d1a;
-  --card-w:     520px;
+  --card-w:     460px;
   --card-h:     min(820px, 88vh);
 }
 
@@ -542,16 +542,16 @@ body {
 ──────────────────────────────────────────── */
 #nav {
   position: fixed;
-  top: 50%;
+  bottom: 22px;
   left: 0;
   right: 0;
-  transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
   padding: 0 calc(50% - var(--card-w)/2 - 64px);
   z-index: 100;
   pointer-events: none;
 }
+   
 .nav-btn {
   pointer-events: auto;
 }
