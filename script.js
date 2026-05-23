@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let locked          = true;
   let currentSceneTop = null;
   let lastEnnuIndex   = -1;
+  let textboxsInited  = false;
 
   document.body.style.overflow = "hidden";
 
@@ -49,6 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.style.overflow = "auto";
       yearDisplay.classList.add("visible");
       navDotsContainer.classList.add("visible");
+      // Start textbox animaties zodra het gordijn weg is
+      if (!textboxsInited) {
+        textboxsInited = true;
+        initTextboxAnimations();
+      }
     }
     if (progress < 1 && !locked) {
       locked = true;
@@ -58,7 +64,71 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === YOUTUBE: pauzeer iframes die niet meer in beeld zijn via postMessage ===
+  // =============================================
+  // TEXTBOX ANIMATIES: slide-in + typewriter
+  // =============================================
+  function initTextboxAnimations() {
+    const textboxes = document.querySelectorAll(".textbox");
+
+    textboxes.forEach((box) => {
+      // 1. Meet de natuurlijke hoogte voor later
+      const naturalHeight = box.offsetHeight;
+      // 2. Sla de volledige tekst op
+      box.dataset.fullText = box.textContent.trim();
+      // 3. Zet een min-height zodat de box niet inklapt als tekst leeg is
+      box.style.minHeight = naturalHeight + "px";
+      // 4. Leeg de box (typewriter vult hem later)
+      box.textContent = "";
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !entry.target.dataset.animated) {
+            entry.target.dataset.animated = "true";
+            // Stap 1: slide de box in positie
+            entry.target.classList.add("is-visible");
+            // Stap 2: start typewriter na de slide-animatie (~650ms)
+            setTimeout(() => {
+              typewriterEffect(entry.target, entry.target.dataset.fullText);
+            }, 500);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    textboxes.forEach((box) => observer.observe(box));
+  }
+
+  function typewriterEffect(element, text, speed = 14) {
+    let i = 0;
+    // Maak een tekstnode en een cursor-element
+    const textNode = document.createTextNode("");
+    const cursor   = document.createElement("span");
+    cursor.className = "tw-cursor";
+    cursor.textContent = "|";
+    element.appendChild(textNode);
+    element.appendChild(cursor);
+
+    function type() {
+      if (i < text.length) {
+        textNode.textContent = text.slice(0, i + 1);
+        i++;
+        setTimeout(type, speed);
+      } else {
+        // Cursor verdwijnt zacht na voltooiing
+        cursor.style.transition = "opacity 0.4s";
+        cursor.style.opacity    = "0";
+        setTimeout(() => cursor.remove(), 450);
+      }
+    }
+    type();
+  }
+
+  // =============================================
+  // YOUTUBE: pauzeer iframes via postMessage
+  // =============================================
   function pauseAllIframesExcept(activeScene) {
     allScenes.forEach((scene) => {
       if (scene === activeScene) return;
@@ -185,40 +255,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, { passive: false });
 
-  // === SCROLLAMA (alle scenes — tekst én video) ===
+  // =============================================
+  // SCROLLAMA — jaar-interpolatie (fix voor
+  // video-scenes zonder data-year)
+  // =============================================
   const scroller = scrollama();
   scroller
     .setup({ step: ".scene", offset: 0.5, progress: true })
     .onStepEnter(({ element }) => {
-      // Achtergrond: gebruik de DOM-positie van de scene
       const bgIndex = allScenesArray.indexOf(element);
       setBackground(bgIndex);
       currentSceneTop = element.offsetTop;
 
-      // Nav-dots: alleen bijwerken bij info-scenes
       if (element.dataset.type === "info") {
         const infoIndex = parseInt(element.dataset.index);
         updateNavDots(infoIndex);
         if (!locked) navDotsContainer.classList.add("visible");
       }
 
-      // Year display tonen
       if (!locked) yearDisplay.classList.add("visible");
 
-      // Andere YouTube iframes pauzeren
       pauseAllIframesExcept(element);
     })
-    .onStepProgress(({ element, progress }) => {
+    .onStepProgress(({ element, progress: stepProgress }) => {
       // Niet bijwerken als we in de ennu-sectie scrollen
       const scrollTop     = window.scrollY;
       const sectionTop    = ennuSection.offsetTop;
       const sectionBottom = sectionTop + ennuSection.offsetHeight - window.innerHeight;
       if (scrollTop >= sectionTop && scrollTop <= sectionBottom) return;
 
-      const yearStart = parseInt(element.dataset.year);
-      const next      = element.nextElementSibling;
-      const yearEnd   = next && next.dataset.year ? parseInt(next.dataset.year) : yearStart;
-      yearDisplay.textContent = Math.round(yearStart + (yearEnd - yearStart) * progress);
+      const yearStart = parseInt(element.dataset.year) || 0;
+
+      // Zoek het EERSTVOLGENDE .scene element met een data-year
+      // (slaat video-scenes en andere tussenliggende elementen over)
+      let nextEl = element.nextElementSibling;
+      while (nextEl && (!nextEl.classList.contains("scene") || !nextEl.dataset.year)) {
+        nextEl = nextEl.nextElementSibling;
+      }
+      const yearEnd = nextEl ? (parseInt(nextEl.dataset.year) || yearStart) : yearStart;
+
+      const interpolated = Math.round(yearStart + (yearEnd - yearStart) * stepProgress);
+      yearDisplay.textContent = interpolated;
     });
 
   window.addEventListener("resize", scroller.resize);
