@@ -3,41 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biblebelt Storytelling</title>
+<title>De Bijbelbelt</title>
 <link rel="stylesheet" href="style.css">
 <script src="https://unpkg.com/scrollama"></script>
-<style>
-  .video-scene {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 6vw;
-  }
-  .video-scene .video-wrapper {
-    width: 100%;
-    position: relative;
-    padding-bottom: 56.25%;
-    height: 0;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .video-scene .video-wrapper iframe {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-  }
-  @media (max-width: 600px) {
-    .video-scene { padding: 40px 0; }
-    .video-scene .video-wrapper { border-radius: 0; box-shadow: none; }
-  }
-</style>
 </head>
 <body>
 
@@ -54,22 +22,21 @@
 <div id="nav-dots"></div>
 
 <div id="backgrounds">
-  <div class="bg-slide active" style="background: #141414;"></div>
-  <div class="bg-slide" style="background: #1a1a1a;"></div>
-  <div class="bg-slide" style="background: #2b1a0e;"></div>
-  <div class="bg-slide" style="background: #0e1a2b;"></div>
-  <div class="bg-slide" style="background: #1a1206;"></div>
-  <div class="bg-slide" style="background: #1a0808;"></div>
-  <div class="bg-slide" style="background: #0b100f;"></div>
-  <div class="bg-slide" style="background: #10101f;"></div>
-  <div class="bg-slide" style="background: #1a150d;"></div>
-  <div class="bg-slide" style="background: #0d1a10;"></div>
+  <div class="bg-slide active"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
+  <div class="bg-slide"></div>
 </div>
 
 <!-- STORY -->
 <div id="story">
 
-  <!-- INTRO: breed, gecentreerd -->
   <section class="scene scene--intro" data-type="intro" data-year="1800">
     <div class="textbox textbox--wide">
       De Bijbelbelt in Nederland: een religieus gebied dat niet zo oud is als vaak wordt gedacht, maar is ontstaan door politieke en sociale veranderingen in de 19e eeuw. Het verhaal laat zien hoe politieke keuzes invloed hebben op de lange termijn in een gebied, en hoe de Bijbelbelt zelfs vandaag de dag nog steeds veranderd.
@@ -179,7 +146,6 @@
   </section>
 
 </div>
-<!-- einde #story -->
 
 <!-- INTRO VOOR DATA -->
 <div id="ennu-intro">
@@ -187,10 +153,10 @@
     <div class="ennu-intro-label">En nu?</div>
     <h2>De Bijbelbelt zichtbaar in stemgedrag</h2>
     <p>
-      De religieuze geografie van Nederland laat zich ook aflezen uit de politiek. 
-      Sinds 1922 doet de <strong>SGP</strong> — de Staatkundig Gereformeerde Partij — mee aan de 
-      landelijke verkiezingen. De kaarten hieronder tonen het SGP-stemgedrag per gemeente 
-      door de decennia heen. Keer op keer tekent dezelfde diagonale strook zich af: 
+      De religieuze geografie van Nederland laat zich ook aflezen uit de politiek.
+      Sinds 1922 doet de <strong>SGP</strong> — de Staatkundig Gereformeerde Partij — mee aan de
+      landelijke verkiezingen. De kaarten hieronder tonen het SGP-stemgedrag per gemeente
+      door de decennia heen. Keer op keer tekent dezelfde diagonale strook zich af:
       van Zeeland tot de Veluwe. De Bijbelbelt in cijfers.
     </p>
   </div>
@@ -199,7 +165,6 @@
 <!-- EN NU: sticky scroll sectie -->
 <div id="ennu-section">
   <div class="ennu-sticky">
-
     <div class="ennu-label">Stemgedrag SGP per gemeente</div>
 
     <div class="ennu-slide active" data-year="1961">
@@ -270,7 +235,6 @@
 
   </div>
 </div>
-<!-- einde #ennu-section -->
 
 <!-- DATA VERANTWOORDING -->
 <div id="data-verantwoording">
