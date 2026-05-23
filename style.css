@@ -184,6 +184,11 @@ body {
 /* Linker boxjes schuiven van links */
 .scene.right .textbox {
   transform: translateX(-80px);
+  margin-left: 5vw;
+}
+
+.scene.right .textbox.is-visible {
+  margin-left: 5vw;
 }
 
 /* Intro/center box schuift van onder */
