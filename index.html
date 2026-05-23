@@ -869,6 +869,8 @@ function buildCard(s, index) {
         </div>`;
       inner.querySelectorAll('.bubble').forEach(b => {
         b.dataset.fullText = b.textContent.trim();
+        b.textContent = '';
+        b.style.opacity = '0';
       });
       break;
     }
@@ -990,6 +992,7 @@ function update() {
     if (newPos === 'is-active' && !el.classList.contains('is-active')) {
       el.querySelectorAll('.bubble').forEach(b => {
         b.style.animation = 'none';
+        b.style.opacity = '';
         b.offsetHeight;
         b.style.animation = '';
       });
