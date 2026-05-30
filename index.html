@@ -316,17 +316,6 @@ body {
 }
 .bubble-top    { top: 28px; }
 .bubble-bottom { bottom: 34px; }
-.photo-credit {
-  position: absolute;
-  bottom: 10px;
-  right: 14px;
-  font-size: 10px;
-  color: rgba(255,255,255,0.45);
-  font-style: italic;
-  letter-spacing: 0.3px;
-  z-index: 4;
-  pointer-events: none;
-}
 .bubble-mid    { top: 50%; transform: translateY(-50%); }
 
 .bubble-top::before {
@@ -612,8 +601,6 @@ body {
 /* ────────────────────────────────────────────
    ORTHODOX TOOLTIP
 ──────────────────────────────────────────── */
-
-/* Het klikbare woord zelf */
 .tooltip-word {
   border-bottom: 1.5px dotted rgba(13, 13, 26, 0.6);
   cursor: pointer;
@@ -624,7 +611,6 @@ body {
   border-bottom-color: rgba(13, 13, 26, 1);
 }
 
-/* Donkere overlay achter het popup */
 #tooltip-overlay {
   position: fixed;
   inset: 0;
@@ -639,7 +625,6 @@ body {
   pointer-events: auto;
 }
 
-/* Het popup kaartje */
 #word-tooltip {
   position: fixed;
   top: 50%;
@@ -662,7 +647,6 @@ body {
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* Titel in het popup */
 #word-tooltip h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.2rem;
@@ -673,7 +657,6 @@ body {
   line-height: 1.2;
 }
 
-/* Tekst in het popup */
 #word-tooltip p {
   font-size: 13.5px;
   color: rgba(255, 255, 255, 0.72);
@@ -682,7 +665,6 @@ body {
   font-weight: 300;
 }
 
-/* Sluitknop × */
 #tooltip-close {
   position: absolute;
   top: 13px;
@@ -732,7 +714,7 @@ body {
 
 <!-- Top chrome -->
 <div id="topbar"><span id="topbar-title">De Bijbelbelt</span></div>
-<div id="counter">1 / 27</div>
+<div id="counter">1 / 32</div>
 <div id="year-tag">1800</div>
 <div id="progress-bar"></div>
 
@@ -759,14 +741,15 @@ body {
 
 <script>
 // ────────────────────────────────────────────
-//  SLIDE DATA
+//  SLIDE DATA  (32 kaartjes)
 // ────────────────────────────────────────────
 const slides = [
+
   // 1 — COVER
   { type: 'cover', year: '' },
 
   // 2 — Intro
-  { type: 'story', year: '1800', bg: 'bg-1', img: 'FotoV2/Foto1.jpg', credit: 'Amsterdams Historisch Museum',
+  { type: 'story', year: '1800', bg: 'bg-1',
     bubbles: [
       { pos: 'top',
         text: 'In dit verhaal wordt uitgepluisd hoe de Biblebelt is ontstaan, de strook gemeenten die vooral bekend staat om zijn hoge concentratie gelovigen.' },
@@ -775,7 +758,7 @@ const slides = [
     ]},
 
   // 3 — Wat is de Bijbelbelt
-  { type: 'story', year: '1800', bg: 'bg-2', img: 'FotoV2/Foto2.jpg', credit: 'Eigen datavisualisatie',
+  { type: 'story', year: '1800', bg: 'bg-2',
     bubbles: [
       { pos: 'top',
         text: 'De Biblebelt staat in Nederland bekend door een aantal punten. Het heeft de hoogste concentratie SGP- en CU-stemmers, er wonen veel gelovigen, in gemeenten op de Biblebelt wordt vastgehouden aan christelijke waarden, zoals zondagsrust, en ze lezen graag het Nederlands Dagblad of het Reformatorisch Dagblad.' }
@@ -784,38 +767,48 @@ const slides = [
   // 4 — Video 1
   { type: 'video', year: '1800', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/Dx4mLE4lZ0A',
-    label: 'Historicus Peter van Rooden beschrijft waar de Bijbelbelt precies ligt, wat hem kenmerkt en welke organisaties er onlosmakelijk mee verbonden zijn. Hij deed uitgebreid onderzoek naar de Biblebelt en schreef er meerdere keren over in het NRC.' },
+    label: 'Historicus Peter van Rooden beschrijft waar de Bijbelbelt precies ligt, wat hem kenmerkt en welke organisaties er onlosmakelijk mee verbonden zijn. Hij deed uitgebreid onderzoek naar de Bijbelbelt en schreef er meerdere keren over in het NRC.' },
 
-  // 5 — Elite bestuur
-  { type: 'story', year: '1810', bg: 'bg-3', img: 'FotoV2/Foto3.jpg', credit: 'Rijksmuseum',
+  // 5 — Elite bestuur (1/2)
+  { type: 'story', year: '1810', bg: 'bg-3',
     bubbles: [
       { pos: 'top',
-        text: 'Om te begrijpen hoe de Bijbelbelt ontstond, moet je weten hoe Nederland rond 1800 werd bestuurd. In die tijd was het een kleine groep van adellijke families en regenten dat de touwtjes in handen had. Zij benoemden de burgemeesters, de rechters én de predikanten in Nederland. Daarnaast bestond er in Nederland 1 kerk, de Nederlands Hervormde Kerk, waar lang niet iedereen zich meer thuis voelde.' },
-      { pos: 'bottom',
+        text: 'Om te begrijpen hoe de Bijbelbelt ontstond, moet je weten hoe Nederland rond 1800 werd bestuurd. In die tijd was het een kleine groep van adellijke families en regenten dat de touwtjes in handen had. Zij benoemden de burgemeesters, de rechters én de predikanten in Nederland. Daarnaast bestond er in Nederland 1 kerk, de Nederlands Hervormde Kerk, waar lang niet iedereen zich meer thuis voelde.' }
+    ]},
+
+  // 6 — Elite bestuur (2/2)  ← NIEUW
+  { type: 'story', year: '1810', bg: 'bg-3',
+    bubbles: [
+      { pos: 'mid',
         text: 'Gewone burgers — de arbeiders, boeren en kleine middenstanders — hadden niets in te brengen over het vaderland. Niet in de politiek, niet in de kerk. Verschillende groepen, zoals de socialisten en protestanten, zijn dat zat en beginnen die elite uit te dagen.' }
     ]},
 
-  // 6 — Video 2
+  // 7 — Video 2
   { type: 'video', year: '1810', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/6ITh3bOqT1A',
     label: 'Van Rooden over hoe gewone burgers zich in de tweede helft van de 19e eeuw voor het eerst begonnen te roeren, en hoe zij de liberale elite begonnen uit te dagen.' },
 
-  // 7 — Kuyper
-  { type: 'story', year: '1860', bg: 'bg-4', img: 'FotoV2/Foto4.jpg', credit: 'Rijksmuseum',
+  // 8 — Kuyper (1/2)
+  { type: 'story', year: '1860', bg: 'bg-4',
     bubbles: [
       { pos: 'top',
-        text: 'Een van die bewegingen die de elite uitdaagde waren de orthodox-protestanten, ofwel die middenklasse, die eigenlijk niks te zeggen hadden over Nederland. Om het verhaal van de Biblebelt te begrijpen is het belangrijk om te weten hoe deze groep ontstond en wie deze organiseerde.' },
-      { pos: 'bottom',
+        text: 'Een van die bewegingen die de elite uitdaagde waren de orthodox-protestanten, ofwel die middenklasse, die eigenlijk niks te zeggen hadden over Nederland. Om het verhaal van de Biblebelt te begrijpen is het belangrijk om te weten hoe deze groep ontstond en wie deze organiseerde.' }
+    ]},
+
+  // 9 — Kuyper (2/2)  ← NIEUW
+  { type: 'story', year: '1860', bg: 'bg-4',
+    bubbles: [
+      { pos: 'mid',
         text: 'Een man speelt hierin de hoofdrol: Abraham Kuyper. Hij spreekt juist tot die middenklasse en vertelt hun dat zij hun mond open moeten doen tegen die regerende elite. Zijn boodschap was dan ook: jullie zwijgen al veel te lang.' }
     ]},
 
-  // 8 — Video 3
+  // 10 — Video 3
   { type: 'video', year: '1860', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/06JKom7EvJQ',
     label: 'Van Rooden beschrijft wie Kuyper is en hoe hij deze onderdrukte groep in Nederland begon te organiseren.' },
 
-  // 9 — Breuk met de kerk
-  { type: 'story', year: '1870', bg: 'bg-5', img: 'FotoV2/Foto5.jpg', credit: 'Nationaal Archief',
+  // 11 — Breuk met de kerk (ongewijzigd)
+  { type: 'story', year: '1870', bg: 'bg-5',
     bubbles: [
       { pos: 'top',
         text: 'Langzaamaan breidt Kuyper zijn beweging uit en steeds meer mensen sluiten zich bij hem aan. Hij breekt als het ware met de hervormde kerk. Hij zorgt ervoor dat de gelovigen in zijn beweging kunnen genieten van bijvoorbeeld onderwijs dat aansluit bij het geloof, en niet langer het onderwijs van de Nederlandse Hervormde Kerk, dat door die elite werd aangestuurd.' },
@@ -823,27 +816,32 @@ const slides = [
         text: 'Kuyper sticht een landelijke krant, bouwt een netwerk van scholen op en richt de eerste echte politieke partij van Nederland op: de Anti-Revolutionaire Partij — met leden, kieskringen en een programma. Dit alles buiten de elite om.' }
     ]},
 
-  // 10 — Video 4
+  // 12 — Video 4
   { type: 'video', year: '1870', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/pIyxmrLUuSw',
     label: 'Van Rooden over hoe Kuyper als eerste populist gewone gelovigen aansprak en een grote groep mensen achter zich weet te krijgen.' },
 
-  // 11 — Kiesrecht
-  { type: 'story', year: '1880', bg: 'bg-6', img: 'FotoV2/Foto6.jpg', credit: 'DNPP — ARP 1946',
+  // 13 — Kiesrecht (1/2)
+  { type: 'story', year: '1880', bg: 'bg-6',
     bubbles: [
       { pos: 'top',
-        text: 'Dan komt er een belangrijk moment in de geschiedenis: het algemeen kiesrecht. Dit wordt uitgebreid over de jaren heen, maar rond 1880 mocht voor het eerst een grote groep gewone mannen stemmen. Opeens moesten mensen een keuze maken: op wie stem ik? Kuypers organisatie, zijn partij, zijn krant en zijn kerkennetwerk waren er al klaar voor.' },
-      { pos: 'bottom',
+        text: 'Dan komt er een belangrijk moment in de geschiedenis: het algemeen kiesrecht. Dit wordt uitgebreid over de jaren heen, maar rond 1880 mocht voor het eerst een grote groep gewone mannen stemmen. Opeens moesten mensen een keuze maken: op wie stem ik? Kuypers organisatie, zijn partij, zijn krant en zijn kerkennetwerk waren er al klaar voor.' }
+    ]},
+
+  // 14 — Kiesrecht (2/2)  ← NIEUW
+  { type: 'story', year: '1880', bg: 'bg-6',
+    bubbles: [
+      { pos: 'mid',
         text: 'Het waren die eerste stemmingen die vastlegden wie orthodox-protestant was en wie niet. En die keuze gaven ouders door aan hun kinderen.' }
     ]},
 
-  // 12 — Video 5
+  // 15 — Video 5
   { type: 'video', year: '1880', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/TgHGjaER5Xc',
     label: 'Van Rooden over het beslissende moment: pas wanneer er gestemd moet worden, moeten mensen kiezen. Precies in die korte periode tussen 1860 en 1890 ontstaat de Bijbelbelt.' },
 
-  // 13 — Tussensamenvatting
-  { type: 'story', year: '1886', bg: 'bg-7', img: 'FotoV2/Foto7.jpg', credit: 'Stadsarchief Amsterdam',
+  // 16 — Tussensamenvatting (ongewijzigd)
+  { type: 'story', year: '1886', bg: 'bg-7',
     bubbles: [
       { pos: 'top',
         text: 'En zo zit het. De mensen die zich aansloten bij de beweging van Kuyper, kwamen uit het gebied dat wij vandaag de dag de Biblebelt noemen. Het ontstaan ervan heeft dus niet zozeer te maken met geloof, maar nog veel meer met politiek.' },
@@ -851,36 +849,46 @@ const slides = [
         text: 'De mensen waren er al, en de strook bestond eigenlijk ook al. Maar pas wanneer er politiek gezien gekozen moest worden werd die strook voor het eerst zichtbaar. Die keuze om op Kuyper te stemmen werd vervolgens generatie op generatie overgegeven.' }
     ]},
 
-  // 14 — Het bewijs: predikanten
-  { type: 'story', year: '1886', bg: 'bg-8', img: 'FotoV2/Foto8.jpg', credit: 'Wikimedia Commons',
+  // 17 — Predikanten (1/2)
+  { type: 'story', year: '1886', bg: 'bg-8',
     bubbles: [
       { pos: 'top',
-        text: 'Van Rooden heeft uitgebreid onderzoek gedaan naar de Biblebelt om het ontstaan ervan te onderbouwen. Tussen 1625 en 1875 bekeek hij meer dan 25.000 verhuizingen van predikanten: van welke gemeente kwamen ze, en naar welke gemeente gingen ze? De redenering is simpel: als de Bijbelbelt al eeuwenoud was, zouden orthodoxe predikanten al vroeg naar andere orthodoxe gemeenten trekken.' },
-      { pos: 'bottom',
+        text: 'Van Rooden heeft uitgebreid onderzoek gedaan naar de Biblebelt om het ontstaan ervan te onderbouwen. Tussen 1625 en 1875 bekeek hij meer dan 25.000 verhuizingen van predikanten: van welke gemeente kwamen ze, en naar welke gemeente gingen ze? De redenering is simpel: als de Bijbelbelt al eeuwenoud was, zouden orthodoxe predikanten al vroeg naar andere orthodoxe gemeenten trekken.' }
+    ]},
+
+  // 18 — Predikanten (2/2)  ← NIEUW
+  { type: 'story', year: '1886', bg: 'bg-8',
+    bubbles: [
+      { pos: 'mid',
         text: 'Maar dat patroon bleek pas na 1870 te ontstaan — precies op het moment dat het kiesrecht werd ingevoerd. Daarvoor bestond de geografische verdeling gewoon niet. De Bijbelbelt bestond vóór de politiek simpelweg nog niet.' }
     ]},
 
-  // 15 — Video 6
+  // 19 — Video 6
   { type: 'video', year: '1886', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/lUpHXvQ7iRk',
     label: 'Van Rooden legt zijn predikantenonderzoek uit: 25.000 verhuizingen tussen 1625 en 1875, en wat dat aantoont over wanneer de Bijbelbelt werkelijk is ontstaan.' },
 
-  // 16 — Patroon niet uniek
-  { type: 'story', year: '1890', bg: 'bg-9', img: 'FotoV2/Foto9.jpg', credit: 'Wikimedia Commons',
+  // 20 — Patroon niet uniek (1/2)
+  { type: 'story', year: '1890', bg: 'bg-9',
     bubbles: [
       { pos: 'top',
-        text: 'Wat er in Nederland gebeurde — dat één politieke keuze generaties lang vastlegt waar in een gebied op gestemd wordt — is geen uitzondering. Historici hebben vaker aangetoond dat één stemming de kaart van een land voor generaties vastlegt. Het bekendste voorbeeld komt uit Frankrijk.' },
-      { pos: 'bottom',
+        text: 'Wat er in Nederland gebeurde — dat één politieke keuze generaties lang vastlegt waar in een gebied op gestemd wordt — is geen uitzondering. Historici hebben vaker aangetoond dat één stemming de kaart van een land voor generaties vastlegt. Het bekendste voorbeeld komt uit Frankrijk.' }
+    ]},
+
+  // 21 — Patroon niet uniek (2/2)  ← NIEUW
+  { type: 'story', year: '1890', bg: 'bg-9',
+    bubbles: [
+      { pos: 'mid',
         text: 'In 1791 stemde heel Frankrijk over de vraag of de revolutionaire overheid de kerk mocht reorganiseren. Die kaart valt bijna exact samen met de presidentsverkiezingen van Mitterand in 1981 — tweehonderd jaar later. Eén stemming, anderhalve eeuw effect. Precies wat we in Nederland ook zien.' }
     ]},
 
-  // 17 — Video 7
+  // 22 — Video 7
   { type: 'video', year: '1890', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/oboLBR3PU5E',
     label: 'Van Rooden over het Franse voorbeeld uit 1791: hoe één vroege stemming tweehonderd jaar later nog steeds zichtbaar was op de politieke kaart, en waarom dat geen toeval is.' },
 
-  // 18 — Ontkerkelijking
-  { type: 'story', year: '1960', bg: 'bg-10', img: 'FotoV2/Foto10.jpg', credit: 'S. de Jong — Wikimedia Commons',
+  // 23 — Ontkerkelijking (ongewijzigd)
+  { type: 'story', year: '1960', bg: 'bg-10',
     bubbles: [
       { pos: 'top',
         text: 'Het geloof speelt al geen dominante rol meer in de hedendaagse, Nederlandse samenleving. Sinds de jaren zestig liepen kerken in Nederland in hoog tempo leeg. Ook de Bijbelbelt ontkwam daar niet aan, maar hij verdween niet.' },
@@ -888,48 +896,48 @@ const slides = [
         text: 'Van Rooden ziet juist dat de Biblebelt hedendaags alleen nog maar verder concentreert en versterkt.' }
     ]},
 
-  // 19 — Video 8
+  // 24 — Video 8
   { type: 'video', year: '2000', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/kqmSt4Fw8ww',
     label: 'Van Rooden vertelt hoe ontkerkelijking de Bijbelbelt niet deed verdwijnen, maar er juist voor zorgde dat hij verder concentreerde. Onderwijs speelde hierbij een grote rol.' },
 
-  // 20 — EN NU sectie-intro
+  // 25 — EN NU sectie-intro
   { type: 'section', year: '2000', bg: 'bg-ennu',
     eyebrow: 'En nu?',
     title: 'De Bijbelbelt zichtbaar in stemgedrag',
     text: 'Aan de hand van het stemgedrag op de SGP is precies te zien hoe een politieke keuze zich voor tientallen jaren vastlegt. Van 1961 tot 2025 is de Bijbelbelt steeds herkenbaar — en steeds geconcentreerder.' },
 
-  // 21 — Kaart 1961
+  // 26 — Kaart 1961
   { type: 'map', year: '1961', src: 'Foto/Foto10.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'Rond 1961 is het nog voornamelijk de CU die stemmen binnenhaalt, maar de vorm van de Bijbelbelt is al een beetje terug te zien in de uitslag van het aantal stemmen op de SGP per gemeente.' },
 
-  // 22 — Kaart 1998
+  // 27 — Kaart 1998
   { type: 'map', year: '1998', src: 'Foto/Foto11.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'In 1998 haalt de SGP veel stemmen in de Bijbelbelt. De diagonale strook van Zeeland tot de Veluwe wordt goed zichtbaar in het stemgedrag.' },
 
-  // 23 — Kaart 2010
+  // 28 — Kaart 2010
   { type: 'map', year: '2010', src: 'Foto/Foto12.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'Het aantal stemmen voor de SGP blijft de daaropvolgende jaren vrijwel hetzelfde. Het laat zien wat Van Rooden vertelde: een politieke beslissing kan jarenlang worden vastgelegd.' },
 
-  // 24 — Kaart 2017
+  // 29 — Kaart 2017
   { type: 'map', year: '2017', src: 'Foto/Foto13.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: '' },
 
-  // 25 — Kaart 2021
+  // 30 — Kaart 2021
   { type: 'map', year: '2021', src: 'Foto/Foto14.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: '' },
 
-  // 26 — Kaart 2025
+  // 31 — Kaart 2025
   { type: 'map', year: '2025', src: 'Foto/Foto15.jpg',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'Tot op heden is de Bijbelbelt herkenbaar aan zijn stemgedrag, en in de toekomst zal deze alleen nog maar verder concentreren.' },
 
-  // 27 — Einde / bronnen
+  // 32 — Einde / bronnen
   { type: 'end', year: '' }
 ];
 
@@ -945,13 +953,7 @@ function buildCard(s, index) {
 
   const bgDiv = document.createElement('div');
   bgDiv.className = 'card-bg';
-  if (s.img) {
-    bgDiv.style.backgroundImage = `url('${s.img}')`;
-    bgDiv.style.backgroundSize = 'cover';
-    bgDiv.style.backgroundPosition = 'center';
-  } else if (s.bg) {
-    bgDiv.classList.add(s.bg);
-  }
+  if (s.bg) bgDiv.classList.add(s.bg);
   card.appendChild(bgDiv);
 
   const inner = document.createElement('div');
@@ -983,7 +985,6 @@ function buildCard(s, index) {
           ${s.bubbles.map(b => `
             <div class="bubble bubble-${b.pos}">${b.text}</div>
           `).join('')}
-          ${s.credit ? `<div class="photo-credit">© ${s.credit}</div>` : ''}
         </div>`;
       inner.querySelectorAll('.bubble').forEach(b => {
         b.dataset.fullText = b.textContent.trim();
@@ -1091,8 +1092,6 @@ function injectOrthodoxTooltip(bubbleEl) {
   const text = bubbleEl.textContent;
   if (!text.toLowerCase().includes('orthodox')) return;
 
-  // Vervang eerste voorkomen van "orthodox" (inclusief samenstellingen)
-  // met een klikbare span — alleen het basiswoord onderstrepen
   bubbleEl.innerHTML = bubbleEl.textContent.replace(
     /(orthodox)/i,
     '<span class="tooltip-word" role="button" tabindex="0" aria-haspopup="dialog">$1</span>'
@@ -1176,7 +1175,6 @@ function update() {
                 charIdx++;
                 setTimeout(type, 16);
               } else {
-                // Typing klaar — injecteer tooltip als "orthodox" aanwezig is
                 injectOrthodoxTooltip(b);
               }
             }
