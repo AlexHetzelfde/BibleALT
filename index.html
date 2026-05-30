@@ -120,7 +120,6 @@ body {
   height: var(--card-h);
   border-radius: 20px;
   overflow: hidden;
-  /* Center by default */
   left: 50%;
   top: 50%;
   margin-left: calc(var(--card-w) / -2);
@@ -135,7 +134,6 @@ body {
   cursor: pointer;
 }
 
-/* Active card — front and center */
 .card.is-active {
   transform: scale(1);
   opacity: 1;
@@ -145,7 +143,6 @@ body {
   box-shadow: 0 32px 80px rgba(0,0,0,0.72);
 }
 
-/* Side cards peek in ~150px from viewport edges */
 .card.is-prev {
   transform: translateX(calc(-1 * (var(--card-w) + 16px))) scale(0.82);
   opacity: 0.55;
@@ -160,7 +157,6 @@ body {
   z-index: 5;
 }
 
-/* Far cards — completely hidden */
 .card.is-far {
   transform: scale(0.75);
   z-index: 1;
@@ -168,14 +164,13 @@ body {
 }
 
 /* ────────────────────────────────────────────
-   CARD BACKGROUNDS (gradient per slide)
+   CARD BACKGROUNDS
 ──────────────────────────────────────────── */
 .card-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
 }
-/* Subtle noise texture */
 .card-bg::after {
   content: '';
   position: absolute;
@@ -272,7 +267,6 @@ body {
   height: 1px;
   background: rgba(255,255,255,0.2);
 }
-/* Decorative cross watermark */
 .c-cover .deco-cross {
   position: absolute;
   top: 50%;
@@ -289,10 +283,7 @@ body {
   height: 100%;
   position: relative;
 }
-/* Optional: replace with actual background images by setting
-   style="background-image: url('jouw-foto.jpg')" on .card-bg */
 .story-grid {
-  /* subtle geometric grid overlay */
   position: absolute;
   inset: 0;
   opacity: 0.06;
@@ -338,7 +329,6 @@ body {
 }
 .bubble-mid    { top: 50%; transform: translateY(-50%); }
 
-/* Triangle pointer on bubble */
 .bubble-top::before {
   content: '';
   position: absolute;
@@ -357,6 +347,7 @@ body {
   border-bottom: 8px solid #87baf4;
   border-top: none;
 }
+
 /* ── VIDEO CARD ── */
 .c-video {
   height: 100%;
@@ -441,7 +432,7 @@ body {
   margin-bottom: 5px;
 }
 
-/* ── SECTION CARD (En Nu) ── */
+/* ── SECTION CARD ── */
 .c-section {
   height: 100%;
   display: flex;
@@ -515,9 +506,7 @@ body {
   font-weight: 300;
   margin-bottom: 7px;
 }
-.c-end ol {
-  padding-left: 18px;
-}
+.c-end ol { padding-left: 18px; }
 .c-end ol li {
   font-size: 12.5px;
   color: rgba(255,255,255,0.6);
@@ -562,10 +551,7 @@ body {
   z-index: 100;
   pointer-events: none;
 }
-   
-.nav-btn {
-  pointer-events: auto;
-}
+.nav-btn { pointer-events: auto; }
 .nav-btn {
   width: 48px;
   height: 48px;
@@ -587,7 +573,6 @@ body {
 .nav-btn:active { transform: scale(0.94); }
 .nav-btn:disabled { opacity: 0.25; cursor: default; transform: none; }
 
-/* Click zone for side cards */
 .side-click {
   position: fixed;
   top: 0;
@@ -600,27 +585,8 @@ body {
 #click-next { right: 0; }
 
 /* ────────────────────────────────────────────
-   RESPONSIVE
+   BUBBLE ANIMATIES
 ──────────────────────────────────────────── */
-@media (max-width: 480px) {
-  :root {
-    --card-w: min(92vw, 390px);
-    --card-h: min(74vh, 580px);
-  }
-  .card.is-prev,
-  .card.is-next {
-    opacity: 0;
-    pointer-events: none;
-  }
-  #click-prev, #click-next { display: none; }
-}
-@media (max-height: 600px) {
-  :root { --card-h: min(85vh, 500px); }
-  .c-cover h1 { font-size: 2.8rem; }
-  .bubble { font-size: 13px; padding: 12px 16px; }
-}
-
-/* ── BUBBLE ANIMATIES ── */
 @keyframes bubbleSlideDown {
   from { opacity: 0; transform: translateY(-12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -642,7 +608,124 @@ body {
 .is-active .bubble-mid {
   animation: bubbleFade 0.45s ease 0.2s both;
 }
-   
+
+/* ────────────────────────────────────────────
+   ORTHODOX TOOLTIP
+──────────────────────────────────────────── */
+
+/* Het klikbare woord zelf */
+.tooltip-word {
+  border-bottom: 1.5px dotted rgba(13, 13, 26, 0.6);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  display: inline;
+}
+.tooltip-word:hover {
+  border-bottom-color: rgba(13, 13, 26, 1);
+}
+
+/* Donkere overlay achter het popup */
+#tooltip-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 490;
+  background: rgba(0, 0, 0, 0.48);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+#tooltip-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Het popup kaartje */
+#word-tooltip {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.93);
+  width: min(300px, 86vw);
+  background: #1e1a3c;
+  border: 1px solid rgba(0, 156, 222, 0.32);
+  border-radius: 18px;
+  padding: 22px 22px 20px 22px;
+  z-index: 500;
+  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+#word-tooltip.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Titel in het popup */
+#word-tooltip h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+  padding-right: 28px;
+  line-height: 1.2;
+}
+
+/* Tekst in het popup */
+#word-tooltip p {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.7;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 300;
+}
+
+/* Sluitknop × */
+#tooltip-close {
+  position: absolute;
+  top: 13px;
+  right: 15px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+#tooltip-close:hover {
+  background: rgba(255,255,255,0.15);
+  color: var(--white);
+}
+
+/* ────────────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────────── */
+@media (max-width: 480px) {
+  :root {
+    --card-w: min(92vw, 390px);
+    --card-h: min(74vh, 580px);
+  }
+  .card.is-prev,
+  .card.is-next {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #click-prev, #click-next { display: none; }
+}
+@media (max-height: 600px) {
+  :root { --card-h: min(85vh, 500px); }
+  .c-cover h1 { font-size: 2.8rem; }
+  .bubble { font-size: 13px; padding: 12px 16px; }
+}
 </style>
 </head>
 <body>
@@ -666,6 +749,14 @@ body {
   <button class="nav-btn" id="btn-next" aria-label="Volgende">&#8594;</button>
 </div>
 
+<!-- ── ORTHODOX TOOLTIP ── -->
+<div id="tooltip-overlay"></div>
+<div id="word-tooltip" role="dialog" aria-modal="true" aria-label="Uitleg: orthodox protestant">
+  <button id="tooltip-close" aria-label="Sluiten">&#215;</button>
+  <h3>Orthodox protestant</h3>
+  <p>Een orthodox protestant neemt de Bijbel letterlijk en beschouwt het geloof als leidraad voor het dagelijks leven. Ze houden vast aan traditionele christelijke waarden — zoals zondagsrust — en geven dat geloof bewust door aan hun kinderen, los van wat de overheid of de elite voorschrijft.</p>
+</div>
+
 <script>
 // ────────────────────────────────────────────
 //  SLIDE DATA
@@ -678,119 +769,135 @@ const slides = [
   { type: 'story', year: '1800', bg: 'bg-1', img: 'FotoV2/Foto1.jpg', credit: 'Amsterdams Historisch Museum',
     bubbles: [
       { pos: 'top',
-        text: 'De Bijbelbelt in Nederland is een religieus gebied dat niet zo oud is als vaak wordt gedacht, maar is ontstaan door politieke en sociale veranderingen in de 19e eeuw.' },
+        text: 'In dit verhaal wordt uitgepluisd hoe de Biblebelt is ontstaan, de strook gemeenten die vooral bekend staat om zijn hoge concentratie gelovigen.' },
       { pos: 'bottom',
-        text: 'Het verhaal laat zien hoe politieke keuzes invloed hebben op de lange termijn, en hoe de Bijbelbelt zelfs vandaag de dag nog steeds verandert.' }
+        text: 'Wat het extra leuk maakt: het ontstaan ervan heeft meer met politiek dan met religie te maken.' }
     ]},
 
   // 3 — Wat is de Bijbelbelt
   { type: 'story', year: '1800', bg: 'bg-2', img: 'FotoV2/Foto2.jpg', credit: 'Eigen datavisualisatie',
     bubbles: [
       { pos: 'top',
-        text: 'De Biblebelt is bij veel Nederlanders bekend als een strook gemeenten ergens in het midden van het land. Een gebied met gereformeerde kerken, SGP stemmers en reformatorische scholen. Maar het gebied is meer dan alleen een strook gelovigen, want zelfs binnen deze strook zijn er grote verschillen.' }
+        text: 'De Biblebelt staat in Nederland bekend door een aantal punten. Het heeft de hoogste concentratie SGP- en CU-stemmers, er wonen veel gelovigen, in gemeenten op de Biblebelt wordt vastgehouden aan christelijke waarden, zoals zondagsrust, en ze lezen graag het Nederlands Dagblad of het Reformatorisch Dagblad.' }
     ]},
 
   // 4 — Video 1
   { type: 'video', year: '1800', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/Dx4mLE4lZ0A',
-    label: 'Peter van Rooden, historicus' },
+    label: 'Historicus Peter van Rooden beschrijft waar de Bijbelbelt precies ligt, wat hem kenmerkt en welke organisaties er onlosmakelijk mee verbonden zijn. Hij deed uitgebreid onderzoek naar de Biblebelt en schreef er meerdere keren over in het NRC.' },
 
   // 5 — Elite bestuur
   { type: 'story', year: '1810', bg: 'bg-3', img: 'FotoV2/Foto3.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'top',
-        text: 'De Biblebelt lijkt een oud fenomeen, maar is eigenlijk pas vrij recent gevormd. Hij ontstond rond het begin van de negentiende eeuw. Nederland werd in die periode feitelijk bestuurd door een kleine elite van regenten en adellijke families.' },
+        text: 'Om te begrijpen hoe de Bijbelbelt ontstond, moet je weten hoe Nederland rond 1800 werd bestuurd. In die tijd was het een kleine groep van adellijke families en regenten dat de touwtjes in handen had. Zij benoemden de burgemeesters, de rechters én de predikanten in Nederland. Daarnaast bestond er in Nederland 1 kerk, de Nederlands Hervormde Kerk, waar lang niet iedereen zich meer thuis voelde.' },
       { pos: 'bottom',
-        text: 'Die elite benoemden de burgemeesters, kozen de predikanten en bepaalden de koers van de hervormde kerk. Gewone burgers zoals arbeiders, boeren, kleine middenstanders hadden daar niets over te zeggen. ' }
+        text: 'Gewone burgers — de arbeiders, boeren en kleine middenstanders — hadden niets in te brengen over het vaderland. Niet in de politiek, niet in de kerk. Verschillende groepen, zoals de socialisten en protestanten, zijn dat zat en beginnen die elite uit te dagen.' }
     ]},
 
   // 6 — Video 2
   { type: 'video', year: '1810', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/6ITh3bOqT1A', label: '' },
+    src: 'https://www.youtube.com/embed/6ITh3bOqT1A',
+    label: 'Van Rooden over hoe gewone burgers zich in de tweede helft van de 19e eeuw voor het eerst begonnen te roeren, en hoe zij de liberale elite begonnen uit te dagen.' },
 
   // 7 — Kuyper
   { type: 'story', year: '1860', bg: 'bg-4', img: 'FotoV2/Foto4.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'top',
-        text: 'Steeds meer groepen, zoals de socialisten en de protestanten, gaan de regerende elite uitdagen. Die groeiende groep mensen had een organisator nodig. Het liefst iemand die de verspreide onrust kon omzetten in een beweging.' },
+        text: 'Een van die bewegingen die de elite uitdaagde waren de orthodox-protestanten, ofwel die middenklasse, die eigenlijk niks te zeggen hadden over Nederland. Om het verhaal van de Biblebelt te begrijpen is het belangrijk om te weten hoe deze groep ontstond en wie deze organiseerde.' },
       { pos: 'bottom',
-        text: 'Die persoon werd Abraham Kuyper. Hij zag dat er gelovigen waren die zich ongehoord voelden. Gelovigen die niets hadden met die adellijke families. Hij begint daarom een tegen beweging. ' }
+        text: 'Een man speelt hierin de hoofdrol: Abraham Kuyper. Hij spreekt juist tot die middenklasse en vertelt hun dat zij hun mond open moeten doen tegen die regerende elite. Zijn boodschap was dan ook: jullie zwijgen al veel te lang.' }
     ]},
 
   // 8 — Video 3
   { type: 'video', year: '1860', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/06JKom7EvJQ', label: '' },
+    src: 'https://www.youtube.com/embed/06JKom7EvJQ',
+    label: 'Van Rooden beschrijft wie Kuyper is en hoe hij deze onderdrukte groep in Nederland begon te organiseren.' },
 
-  // 9 — Hervormde Kerk
+  // 9 — Breuk met de kerk
   { type: 'story', year: '1870', bg: 'bg-5', img: 'FotoV2/Foto5.jpg', credit: 'Nationaal Archief',
     bubbles: [
       { pos: 'top',
-        text: 'De partij van Kuyper wil breken met de Nederlandse Hervormde Kerk. Dat was in de negentiende eeuw de staatskerk: opgericht en bestuurd door de gevestigde elite, met predikanten die door diezelfde elite werden benoemd.' },
+        text: 'Langzaamaan breidt Kuyper zijn beweging uit en steeds meer mensen sluiten zich bij hem aan. Hij breekt als het ware met de hervormde kerk. Hij zorgt ervoor dat de gelovigen in zijn beweging kunnen genieten van bijvoorbeeld onderwijs dat aansluit bij het geloof, en niet langer het onderwijs van de Nederlandse Hervormde Kerk, dat door die elite werd aangestuurd.' },
       { pos: 'bottom',
-        text: 'Voor de orthodoxe beweging die Kuyper aanstuurt was die Nederlandse Hervormde kerk niet meer in lijn met hun geloof, te veel bestuurd vanaf bovenaf. Kuyper gaf die frustratie een stem. Hij sprak niet tot de geleerde bovenlaag, maar tot de kruidenier, de timmerman, de kleine boer die zich juist niet gehoord voelde. Zijn boodschap was eenvoudig: jullie geloof is het echte geloof, en jullie zwijgen al lang genoeg. Kuyper begint met een beweging.' }
+        text: 'Kuyper sticht een landelijke krant, bouwt een netwerk van scholen op en richt de eerste echte politieke partij van Nederland op: de Anti-Revolutionaire Partij — met leden, kieskringen en een programma. Dit alles buiten de elite om.' }
     ]},
 
   // 10 — Video 4
   { type: 'video', year: '1870', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/pIyxmrLUuSw', label: '' },
+    src: 'https://www.youtube.com/embed/pIyxmrLUuSw',
+    label: 'Van Rooden over hoe Kuyper als eerste populist gewone gelovigen aansprak en een grote groep mensen achter zich weet te krijgen.' },
 
-  // 11 — Grondwetsherziening
+  // 11 — Kiesrecht
   { type: 'story', year: '1880', bg: 'bg-6', img: 'FotoV2/Foto6.jpg', credit: 'DNPP — ARP 1946',
     bubbles: [
       { pos: 'top',
-        text: 'Kuypers beweging, die breekt met de Nederlandse Hervormde Kerk en zich eigenlijk keert tegen de adelijke elite, viel samen met een belangrijke politieke ontwikkeling: de grondwetsherziening van 1848, die op een hoogtepunt kwam in 1880, toen elke gemiddelde man mocht stemmen.' },
+        text: 'Dan komt er een belangrijk moment in de geschiedenis: het algemeen kiesrecht. Dit wordt uitgebreid over de jaren heen, maar rond 1880 mocht voor het eerst een grote groep gewone mannen stemmen. Opeens moesten mensen een keuze maken: op wie stem ik? Kuypers organisatie, zijn partij, zijn krant en zijn kerkennetwerk waren er al klaar voor.' },
       { pos: 'bottom',
-        text: 'Voor het eerst moesten gewone burgers daadwerkelijk een keuze maken: op wie stem je? Kuyper had zijn achterban daar al op voorbereid. Maar ook de socialisten en andere nieuwe partijen streden in diezelfde periode om de gunst van de nieuwe kiezers. ' }
+        text: 'Het waren die eerste stemmingen die vastlegden wie orthodox-protestant was en wie niet. En die keuze gaven ouders door aan hun kinderen.' }
     ]},
 
   // 12 — Video 5
   { type: 'video', year: '1880', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/TgHGjaER5Xc', label: '' },
+    src: 'https://www.youtube.com/embed/TgHGjaER5Xc',
+    label: 'Van Rooden over het beslissende moment: pas wanneer er gestemd moet worden, moeten mensen kiezen. Precies in die korte periode tussen 1860 en 1890 ontstaat de Bijbelbelt.' },
 
-  // 13 — Van Rooden
+  // 13 — Tussensamenvatting
   { type: 'story', year: '1886', bg: 'bg-7', img: 'FotoV2/Foto7.jpg', credit: 'Stadsarchief Amsterdam',
     bubbles: [
       { pos: 'top',
-        text: 'De Biblebelt is dus een product van de late negentiende eeuw. De mensen die op Kuyper stemden, vormden eigenlijk het begin van de Biblebelt. De opvolgnde generaties nemen die keuze dan weer over, en zo ontstond de strook in Nederland die nu bekend staat om zijn dichtheid van gelovigen. Dat de Bijbelbelt voor het kiestrecht nog niet bestond, kan Van Rooden aantonen in zijn onderozke. Hij reconstrueerde hoe predikanten zich door de eeuwen heen tussen gemeenten verplaatsen.' },
+        text: 'En zo zit het. De mensen die zich aansloten bij de beweging van Kuyper, kwamen uit het gebied dat wij vandaag de dag de Biblebelt noemen. Het ontstaan ervan heeft dus niet zozeer te maken met geloof, maar nog veel meer met politiek.' },
       { pos: 'bottom',
-        text: 'Als de Biblebelt al veel ouder was, zou je verwachten dat orthodoxe predikanten al in de achttiende eeuw vooral naar andere orthodoxe gemeenten trokken. Maar dat bleek niet het geval.' }
+        text: 'De mensen waren er al, en de strook bestond eigenlijk ook al. Maar pas wanneer er politiek gezien gekozen moest worden werd die strook voor het eerst zichtbaar. Die keuze om op Kuyper te stemmen werd vervolgens generatie op generatie overgegeven.' }
     ]},
 
-  // 14 — Video 6
-  { type: 'video', year: '1886', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/lUpHXvQ7iRk', label: '' },
-
-  // 15 — Politieke geografie
-  { type: 'story', year: '1890', bg: 'bg-8', img: 'FotoV2/Foto8.jpg', credit: 'Wikimedia Commons',
+  // 14 — Het bewijs: predikanten
+  { type: 'story', year: '1886', bg: 'bg-8', img: 'FotoV2/Foto8.jpg', credit: 'Wikimedia Commons',
     bubbles: [
       { pos: 'top',
-        text: 'Het idee dat een stemming een politieke geografie voor generaties vastlegt, zoals dat nu met de biblebelt gebeurt, is niet uniek. Het patroon is namelijk eerder aangetoond door historici.' },
+        text: 'Van Rooden heeft uitgebreid onderzoek gedaan naar de Biblebelt om het ontstaan ervan te onderbouwen. Tussen 1625 en 1875 bekeek hij meer dan 25.000 verhuizingen van predikanten: van welke gemeente kwamen ze, en naar welke gemeente gingen ze? De redenering is simpel: als de Bijbelbelt al eeuwenoud was, zouden orthodoxe predikanten al vroeg naar andere orthodoxe gemeenten trekken.' },
       { pos: 'bottom',
-        text: 'Het meest sprekende voorbeeld komt uit Frankrijk, waar een stemming uit de vroege Revolutie tweehonderd jaar later nog steeds zichtbaar bleek op de politieke kaart.' }
+        text: 'Maar dat patroon bleek pas na 1870 te ontstaan — precies op het moment dat het kiesrecht werd ingevoerd. Daarvoor bestond de geografische verdeling gewoon niet. De Bijbelbelt bestond vóór de politiek simpelweg nog niet.' }
     ]},
 
-  // 16 — Video 7
-  { type: 'video', year: '1890', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/oboLBR3PU5E', label: '' },
+  // 15 — Video 6
+  { type: 'video', year: '1886', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/lUpHXvQ7iRk',
+    label: 'Van Rooden legt zijn predikantenonderzoek uit: 25.000 verhuizingen tussen 1625 en 1875, en wat dat aantoont over wanneer de Bijbelbelt werkelijk is ontstaan.' },
 
-  // 19 — Vandaag
+  // 16 — Patroon niet uniek
+  { type: 'story', year: '1890', bg: 'bg-9', img: 'FotoV2/Foto9.jpg', credit: 'Wikimedia Commons',
+    bubbles: [
+      { pos: 'top',
+        text: 'Wat er in Nederland gebeurde — dat één politieke keuze generaties lang vastlegt waar in een gebied op gestemd wordt — is geen uitzondering. Historici hebben vaker aangetoond dat één stemming de kaart van een land voor generaties vastlegt. Het bekendste voorbeeld komt uit Frankrijk.' },
+      { pos: 'bottom',
+        text: 'In 1791 stemde heel Frankrijk over de vraag of de revolutionaire overheid de kerk mocht reorganiseren. Die kaart valt bijna exact samen met de presidentsverkiezingen van Mitterand in 1981 — tweehonderd jaar later. Eén stemming, anderhalve eeuw effect. Precies wat we in Nederland ook zien.' }
+    ]},
+
+  // 17 — Video 7
+  { type: 'video', year: '1890', bg: 'bg-video',
+    src: 'https://www.youtube.com/embed/oboLBR3PU5E',
+    label: 'Van Rooden over het Franse voorbeeld uit 1791: hoe één vroege stemming tweehonderd jaar later nog steeds zichtbaar was op de politieke kaart, en waarom dat geen toeval is.' },
+
+  // 18 — Ontkerkelijking
   { type: 'story', year: '1960', bg: 'bg-10', img: 'FotoV2/Foto10.jpg', credit: 'S. de Jong — Wikimedia Commons',
     bubbles: [
       { pos: 'top',
-        text: 'Vanaf de jaren zestig ontkerkelijkte Nederland in hoog tempo. Kerken raakten leeg en de verzuiling brokkelde af. Ook de Biblebelt ontkwam daar niet aan.' },
+        text: 'Het geloof speelt al geen dominante rol meer in de hedendaagse, Nederlandse samenleving. Sinds de jaren zestig liepen kerken in Nederland in hoog tempo leeg. Ook de Bijbelbelt ontkwam daar niet aan, maar hij verdween niet.' },
       { pos: 'bottom',
-        text: 'Toch verdween de Biblebelt niet. Sterker nog, hij concentreerde zich juist. Wie er nog wél bij hoorde, trok juist dichter naar elkaar toe. Dat komt onder andere door bijvoorbeeld schoolkeuzes.' }
+        text: 'Van Rooden ziet juist dat de Biblebelt hedendaags alleen nog maar verder concentreert en versterkt.' }
     ]},
 
-  // 18 — Video 8
+  // 19 — Video 8
   { type: 'video', year: '2000', bg: 'bg-video',
-    src: 'https://www.youtube.com/embed/kqmSt4Fw8ww', label: '' },
+    src: 'https://www.youtube.com/embed/kqmSt4Fw8ww',
+    label: 'Van Rooden vertelt hoe ontkerkelijking de Bijbelbelt niet deed verdwijnen, maar er juist voor zorgde dat hij verder concentreerde. Onderwijs speelde hierbij een grote rol.' },
 
   // 20 — EN NU sectie-intro
   { type: 'section', year: '2000', bg: 'bg-ennu',
     eyebrow: 'En nu?',
     title: 'De Bijbelbelt zichtbaar in stemgedrag',
-    text: 'Aan de hand van stemgedrag valt te achterhalen dat een politieke beslissing zich inderdaad kan vastleggen voor tientallen jaren. In 1961 is de Bijbelbelt al vaag terug te zien in het stemgedrag op de SGP, en vanaf 1998 is te zien hoe de verhouding SGP stemmers eigenlijk nauwelijks veranderd tot en met 2025.' },
+    text: 'Aan de hand van het stemgedrag op de SGP is precies te zien hoe een politieke keuze zich voor tientallen jaren vastlegt. Van 1961 tot 2025 is de Bijbelbelt steeds herkenbaar — en steeds geconcentreerder.' },
 
   // 21 — Kaart 1961
   { type: 'map', year: '1961', src: 'Foto/Foto10.jpg',
@@ -805,7 +912,7 @@ const slides = [
   // 23 — Kaart 2010
   { type: 'map', year: '2010', src: 'Foto/Foto12.jpg',
     label: 'Stemgedrag SGP per gemeente',
-    caption: 'Het aantal stemmen voor de SGP blijft de daaropvolgende jaren vrijwel hetzelfde. Het laat zien wat van Rooden vertelde: een politieke beslissing kan jarenlang worden vastgelegd.' },
+    caption: 'Het aantal stemmen voor de SGP blijft de daaropvolgende jaren vrijwel hetzelfde. Het laat zien wat Van Rooden vertelde: een politieke beslissing kan jarenlang worden vastgelegd.' },
 
   // 24 — Kaart 2017
   { type: 'map', year: '2017', src: 'Foto/Foto13.jpg',
@@ -826,7 +933,7 @@ const slides = [
   { type: 'end', year: '' }
 ];
 
-const TOTAL = slides.length; // 27
+const TOTAL = slides.length;
 
 // ────────────────────────────────────────────
 //  BUILD CARD DOM
@@ -836,19 +943,17 @@ function buildCard(s, index) {
   card.className = 'card';
   card.dataset.index = index;
 
-  // Background
   const bgDiv = document.createElement('div');
-bgDiv.className = 'card-bg';
-if (s.img) {
-  bgDiv.style.backgroundImage = `url('${s.img}')`;
-  bgDiv.style.backgroundSize = 'cover';
-  bgDiv.style.backgroundPosition = 'center';
-} else if (s.bg) {
-  bgDiv.classList.add(s.bg);
-}
-card.appendChild(bgDiv);
+  bgDiv.className = 'card-bg';
+  if (s.img) {
+    bgDiv.style.backgroundImage = `url('${s.img}')`;
+    bgDiv.style.backgroundSize = 'cover';
+    bgDiv.style.backgroundPosition = 'center';
+  } else if (s.bg) {
+    bgDiv.classList.add(s.bg);
+  }
+  card.appendChild(bgDiv);
 
-  // Inner
   const inner = document.createElement('div');
   inner.className = 'card-inner';
 
@@ -913,7 +1018,7 @@ card.appendChild(bgDiv);
             ${s.caption}
           </div>
         </div>`;
-      bgDiv.style.display = 'none'; // image takes over
+      bgDiv.style.display = 'none';
       card.style.background = '#0d1020';
       break;
     }
@@ -933,7 +1038,6 @@ card.appendChild(bgDiv);
       inner.innerHTML = `
         <div class="c-end">
           <h2>Dataverantwoording &amp; bronnen</h2>
-
           <div class="end-block">
             <div class="end-label">Dataverantwoording</div>
             <p>De data is opgehaald van verkiezinguitslagen.nl en verwerkt in de Nederlandse kaart met gemeentegrenzen van 2026.</p>
@@ -944,7 +1048,6 @@ card.appendChild(bgDiv);
               <li>Die stemmen opgeteld bij de gemeente van 2026.</li>
             </ol>
           </div>
-
           <div class="end-block">
             <div class="end-label">Bronnen</div>
             <ul>
@@ -958,7 +1061,6 @@ card.appendChild(bgDiv);
               <li><a href="https://historiek.net/biblebelt-bevindelijk-gereformeerden/92425/" target="_blank">Historiek.net — Biblebelt en bevindelijk gereformeerden</a></li>
             </ul>
           </div>
-
           <div class="end-thank">De Bijbelbelt · 2026</div>
         </div>`;
       break;
@@ -977,6 +1079,56 @@ const cardEls = slides.map((s, i) => {
   const el = buildCard(s, i);
   stage.appendChild(el);
   return el;
+});
+
+// ────────────────────────────────────────────
+//  ORTHODOX TOOLTIP LOGICA
+// ────────────────────────────────────────────
+let orthodoxInjected = false;
+
+function injectOrthodoxTooltip(bubbleEl) {
+  if (orthodoxInjected) return;
+  const text = bubbleEl.textContent;
+  if (!text.toLowerCase().includes('orthodox')) return;
+
+  // Vervang eerste voorkomen van "orthodox" (inclusief samenstellingen)
+  // met een klikbare span — alleen het basiswoord onderstrepen
+  bubbleEl.innerHTML = bubbleEl.textContent.replace(
+    /(orthodox)/i,
+    '<span class="tooltip-word" role="button" tabindex="0" aria-haspopup="dialog">$1</span>'
+  );
+
+  const trigger = bubbleEl.querySelector('.tooltip-word');
+  if (!trigger) return;
+
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    openTooltip();
+  });
+  trigger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openTooltip();
+    }
+  });
+
+  orthodoxInjected = true;
+}
+
+function openTooltip() {
+  document.getElementById('tooltip-overlay').classList.add('visible');
+  document.getElementById('word-tooltip').classList.add('visible');
+}
+
+function closeTooltip() {
+  document.getElementById('tooltip-overlay').classList.remove('visible');
+  document.getElementById('word-tooltip').classList.remove('visible');
+}
+
+document.getElementById('tooltip-close').addEventListener('click', closeTooltip);
+document.getElementById('tooltip-overlay').addEventListener('click', closeTooltip);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeTooltip();
 });
 
 // ────────────────────────────────────────────
@@ -1009,6 +1161,7 @@ function update() {
         b.offsetHeight;
         b.style.animation = '';
       });
+
       if (!typedCards.has(i)) {
         typedCards.add(i);
         el.querySelectorAll('.bubble').forEach((b, bIdx) => {
@@ -1022,6 +1175,9 @@ function update() {
                 b.textContent = fullText.slice(0, charIdx + 1);
                 charIdx++;
                 setTimeout(type, 16);
+              } else {
+                // Typing klaar — injecteer tooltip als "orthodox" aanwezig is
+                injectOrthodoxTooltip(b);
               }
             }
             type();
@@ -1078,7 +1234,7 @@ function update() {
   document.getElementById('btn-prev').disabled = current === 0;
   document.getElementById('btn-next').disabled = current === TOTAL - 1;
 
-  // Pause any iframes not in current card
+  // Pauzeer video's buiten huidige kaart
   pauseOtherVideos();
 }
 
@@ -1114,11 +1270,9 @@ document.getElementById('btn-next').addEventListener('click', () => go(1));
 document.getElementById('click-prev').addEventListener('click', () => go(-1));
 document.getElementById('click-next').addEventListener('click', () => go(1));
 
-// Click on side cards to navigate
 stage.addEventListener('click', e => {
   const card = e.target.closest('.card');
   if (!card) return;
-  const idx = parseInt(card.dataset.index);
   if (card.classList.contains('is-prev')) go(-1);
   else if (card.classList.contains('is-next')) go(1);
 });
@@ -1127,8 +1281,8 @@ stage.addEventListener('click', e => {
 //  KEYBOARD
 // ────────────────────────────────────────────
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')    go(-1);
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown')  go(1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
 });
 
 // ────────────────────────────────────────────
