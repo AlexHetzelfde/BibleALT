@@ -179,7 +179,7 @@ body {
   background-repeat: no-repeat;
 }
 
-/* Dark overlay for photo cards — lichter gemaakt (was 0.72) */
+/* Dark overlay for photo cards */
 .card-bg.has-photo::before {
   content: '';
   position: absolute;
@@ -188,7 +188,7 @@ body {
   z-index: 1;
 }
 
-/* Noise texture (all cards) — minder zichtbaar (was 0.35) */
+/* Noise texture (all cards) */
 .card-bg::after {
   content: '';
   position: absolute;
@@ -198,7 +198,7 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Bronvermelding rechtsonder op fotokkaarten */
+/* Bronvermelding rechtsonder op fotokaarten */
 .photo-credit {
   position: absolute;
   bottom: 10px;
@@ -214,7 +214,6 @@ body {
   white-space: nowrap;
 }
 
-/* Op kaartkaarten (donkere achtergrond) iets lichter */
 .map-img-wrap .photo-credit {
   color: rgba(255,255,255,0.32);
 }
@@ -755,7 +754,7 @@ body {
 
 <!-- Top chrome -->
 <div id="topbar"><span id="topbar-title">De Bijbelbelt</span></div>
-<div id="counter">1 / 32</div>
+<div id="counter">1 / 34</div>
 <div id="year-tag">1800</div>
 <div id="progress-bar"></div>
 
@@ -784,16 +783,20 @@ body {
 // ────────────────────────────────────────────
 //  FOTO-TOEWIJZING (chronologisch, Foto1–Foto20)
 //
+//  Geografische kaart (vroeg):
+//    Kaart 4 = Foto10 (Bijbelbelt-kaart, geografische context)
+//
 //  Story-kaarten (met foto):  Foto1 t/m Foto14
-//    Kaart 18 = GEEN foto (overgeslagen → Foto12 gaat door naar kaart 20)
+//    Kaart 19 = GEEN foto (predikanten 1/2 — vervang door foto van een kerkgebouw)
+//    Kaart 20 = GEEN foto (predikanten 2/2)
 //
 //  Data-kaarten (SGP-kaarten): Foto15 t/m Foto20
-//    1961 → Foto15
-//    1998 → Foto16
-//    2010 → Foto17
-//    2017 → Foto18
-//    2021 → Foto19
-//    2025 → Foto20
+//    1961 → Foto15  (kaart 28)
+//    1998 → Foto16  (kaart 29)
+//    2010 → Foto17  (kaart 30)
+//    2017 → Foto18  (kaart 31)
+//    2021 → Foto19  (kaart 32)
+//    2025 → Foto20  (kaart 33)
 // ────────────────────────────────────────────
 
 const slides = [
@@ -802,193 +805,219 @@ const slides = [
   { type: 'cover', year: '' },
 
   // 2 — Intro  |  Foto1
+  // [plaatsnamen toegevoegd; politieke overgang aangescherpt]
   { type: 'story', year: '1800', bg: 'bg-1', photo: 'Foto1.jpg', credit: 'Nationaal Archief',
     bubbles: [
       { pos: 'top',
-        text: 'In dit verhaal wordt uitgepluisd hoe de Biblebelt is ontstaan. Het is de strook gemeenten die bekend staat om zijn hoge concentratie gelovigen.' },
+        text: 'In dit verhaal wordt uitgepluisd hoe de Bijbelbelt is ontstaan — de strook gemeenten van Zwijndrecht tot Urk die bekend staat om zijn hoge concentratie gelovigen.' },
       { pos: 'bottom',
-        text: 'Wat het extra interessant maakt: het ontstaan ervan heeft meer met politiek te maken dan met religie.' }
+        text: 'Wat dit verhaal bijzonder maakt: het gaat niet over geloof, maar over politiek.' }
     ]},
 
   // 3 — Wat is de Bijbelbelt  |  Foto2
   { type: 'story', year: '1800', bg: 'bg-2', photo: 'Foto2.jpg', credit: 'Kleon3',
     bubbles: [
       { pos: 'top',
-        text: 'De Biblebelt staat in Nederland bekend om een aantal dingen. Het heeft de hoogste concentratie SGP- en CU-stemmers. Er wonen veel gelovigen. In de gemeenten wordt vastgehouden aan christelijke waarden, zoals zondagsrust. Daarnaast lezen ze graag het Nederlands Dagblad of het Reformatorisch Dagblad.' }
+        text: 'De Bijbelbelt staat in Nederland bekend om een aantal dingen. Het heeft de hoogste concentratie SGP- en CU-stemmers. Er wonen veel gelovigen. In de gemeenten wordt vastgehouden aan christelijke waarden, zoals zondagsrust. Daarnaast lezen ze graag het Nederlands Dagblad of het Reformatorisch Dagblad.' }
     ]},
 
-  // 4 — Video 1
+  // 4 — NIEUW: Kaart Bijbelbelt  |  Foto10
+  // [geografische context vroeg in het verhaal — was kaart 16]
+  { type: 'map', year: '', src: 'Foto/Foto10.jpg', credit: 'Onbekend',
+    label: 'De Bijbelbelt',
+    caption: 'De Bijbelbelt loopt diagonaal door Nederland — van Zeeland in het westen tot de Veluwe in het noordoosten. Plaatsen als Zwijndrecht, Sliedrecht, Urk en Nunspeet liggen op deze strook.' },
+
+  // 5 — Video 1
   { type: 'video', year: '1800', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/Dx4mLE4lZ0A',
     label: 'Historicus Peter van Rooden beschrijft waar de Bijbelbelt precies ligt, wat hem kenmerkt en welke organisaties er onlosmakelijk mee verbonden zijn. Hij deed uitgebreid onderzoek naar de Bijbelbelt en schreef er meerdere keren over in het NRC.' },
 
-  // 5 — Elite bestuur (1/2)  |  Foto3  — tekstbox onderin
+  // 6 — Elite bestuur (1/2)  |  Foto3
   { type: 'story', year: '1810', bg: 'bg-3', photo: 'Foto3.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'bottom',
         text: 'Om te begrijpen hoe de Bijbelbelt ontstond, moet je weten hoe Nederland rond 1800 werd bestuurd. Een kleine groep van adellijke families en regenten had de touwtjes in handen. Zij benoemden de burgemeesters, de rechters en de predikanten. Daarnaast bestond er in Nederland slechts één kerk. Dat was de Nederlands Hervormde Kerk, waar lang niet iedereen zich thuis voelde.' }
     ]},
 
-  // 6 — Elite bestuur (2/2)  |  Foto4
+  // 7 — Elite bestuur (2/2)  |  Foto4
   { type: 'story', year: '1810', bg: 'bg-3', photo: 'Foto4.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'mid',
         text: 'Gewone burgers zoals de arbeiders, boeren en kleine middenstanders, hadden niets in te brengen over het vaderland. Niet in de politiek, niet in de kerk. Ze waren het zat. Groepen zoals de socialisten en protestanten begonnen de elite uit te dagen.' }
     ]},
 
-  // 7 — Video 2
+  // 8 — Video 2
   { type: 'video', year: '1810', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/6ITh3bOqT1A',
     label: 'Van Rooden over hoe gewone burgers zich in de tweede helft van de 19e eeuw voor het eerst begonnen te roeren, en hoe zij de liberale elite begonnen uit te dagen.' },
 
-  // 8 — Kuyper (1/2)  |  Foto5
+  // 9 — Kuyper (1/2)  |  Foto5
   { type: 'story', year: '1860', bg: 'bg-4', photo: 'Foto5.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'top',
-        text: 'Een van die bewegingen die de elite uitdaagde, waren de orthodox-protestanten. Dit was de middenklasse die niks te zeggen had over Nederland. Om het verhaal van de Biblebelt te begrijpen, is het belangrijk om te weten hoe deze groep ontstond. En wie haar organiseerde.' }
+        text: 'Een van die bewegingen die de elite uitdaagde, waren de orthodox-protestanten. Dit was de middenklasse die niks te zeggen had over Nederland. Om het verhaal van de Bijbelbelt te begrijpen, is het belangrijk om te weten hoe deze groep ontstond. En wie haar organiseerde.' }
     ]},
 
-  // 9 — Kuyper (2/2)  |  Foto6  — tekstbox onderin
+  // 10 — Kuyper (2/2)  |  Foto6
+  // [GEWIJZIGD: "hun" → "hen"]
   { type: 'story', year: '1860', bg: 'bg-4', photo: 'Foto6.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'bottom',
-        text: 'Een man speelt hierin de hoofdrol: Abraham Kuyper. Hij spreekt juist tot die middenklasse. Hij vertelt hun dat zij hun mond open moeten doen tegen de elite. Zijn boodschap is helder: jullie zwijgen al veel te lang.' }
+        text: 'Een man speelt hierin de hoofdrol: Abraham Kuyper. Hij spreekt juist tot die middenklasse. Hij vertelt hen dat zij hun mond open moeten doen tegen de elite. Zijn boodschap is helder: jullie zwijgen al veel te lang.' }
     ]},
 
-  // 10 — Video 3
+  // 11 — Video 3
   { type: 'video', year: '1860', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/06JKom7EvJQ',
     label: 'Van Rooden beschrijft wie Kuyper is en hoe hij deze onderdrukte groep in Nederland begon te organiseren.' },
 
-  // 11 — Breuk met de kerk  |  Foto7  — tekstbox midden
+  // 12 — Breuk met de kerk  |  Foto7
+  // [GEWIJZIGD: "de beweging van Kuyper" i.p.v. "Kuyper zijn beweging"]
   { type: 'story', year: '1870', bg: 'bg-5', photo: 'Foto7.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'mid',
-        text: 'Langzaamaan breidt Kuyper zijn beweging uit. Hij breekt als het ware met de hervormde kerk en zorgt ervoor dat zijn gelovigen onderwijs kunnen volgen dat aansluit bij het geloof. Kuyper sticht een landelijke krant, bouwt een netwerk van scholen op en richt de eerste echte politieke partij van Nederland op: de Anti-Revolutionaire Partij, met leden, kieskringen en een programma. Dit alles buiten de elite om.' }
+        text: 'Langzaamaan breidt de beweging van Kuyper zich uit. Hij breekt als het ware met de hervormde kerk en zorgt ervoor dat zijn gelovigen onderwijs kunnen volgen dat aansluit bij het geloof. Kuyper sticht een landelijke krant, bouwt een netwerk van scholen op en richt de eerste echte politieke partij van Nederland op: de Anti-Revolutionaire Partij, met leden, kieskringen en een programma. Dit alles buiten de elite om.' }
     ]},
 
-  // 12 — Video 4
+  // 13 — Video 4
   { type: 'video', year: '1870', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/pIyxmrLUuSw',
     label: 'Van Rooden over hoe Kuyper als eerste populist gewone gelovigen aansprak en een grote groep mensen achter zich weet te krijgen.' },
 
-  // 13 — Kiesrecht (1/2)  |  Foto8  — tekstbox midden
+  // 14 — Kiesrecht (1/2)  |  Foto8
+  // [GEWIJZIGD: "Kuypers organisatie" → "de beweging van Kuyper"]
   { type: 'story', year: '1880', bg: 'bg-6', photo: 'Foto8.jpg', credit: 'Rijksmuseum',
     bubbles: [
       { pos: 'mid',
-        text: 'Dan komt er een beslissend moment: het algemeen kiesrecht. Rond 1880 mocht een grote groep mannen voor het eerst stemmen. Opeens moesten mensen kiezen: op wie stem ik? Kuypers organisatie, zijn partij, zijn krant en zijn kerkennetwerk waren er al klaar voor.' }
+        text: 'Dan komt er een beslissend moment: het algemeen kiesrecht. Rond 1880 mocht een grote groep mannen voor het eerst stemmen. Opeens moesten mensen kiezen: op wie stem ik? De beweging van Kuyper, zijn partij, zijn krant en zijn kerkennetwerk waren er al klaar voor.' }
     ]},
 
-  // 14 — Kiesrecht (2/2)  |  Foto9
+  // 15 — Kiesrecht (2/2)  |  Foto9
+  // [GEWIJZIGD: "kozen ze als unaniem voor Kuypers" → "kozen ze unaniem voor Kuyper"]
   { type: 'story', year: '1880', bg: 'bg-6', photo: 'Foto9.jpg', credit: 'Chris06',
     bubbles: [
       { pos: 'mid',
-        text: 'Kuyper had deze mensen een identiteit gegeven: ze waren nu orthodox-protestant. Toen ze voor het eerst moesten stemmen, kozen ze als unaniem voor Kuypers. Die stemkeuze gaven ouders vervolgens door aan hun kinderen.' }
+        text: 'Kuyper had deze mensen een identiteit gegeven: ze waren nu orthodox-protestant. Toen ze voor het eerst moesten stemmen, kozen ze unaniem voor Kuyper. Die stemkeuze gaven ouders vervolgens door aan hun kinderen.' }
     ]},
 
-  // 15 — Video 5
+  // 16 — Video 5
   { type: 'video', year: '1880', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/TgHGjaER5Xc',
     label: 'Van Rooden over het beslissende moment: pas wanneer er gestemd moet worden, moeten mensen kiezen. Precies in die korte periode tussen 1860 en 1890 ontstaat de Bijbelbelt.' },
 
-  // 16 — Tussensamenvatting  |  Foto10
-  { type: 'story', year: '1886', bg: 'bg-7', photo: 'Foto10.jpg', credit: 'Onbekend',
+  // 17 — Tussensamenvatting
+  // [GEWIJZIGD: gezamenlijke identiteitsformulering aangescherpt]
+  { type: 'story', year: '1886', bg: 'bg-7',
     bubbles: [
       { pos: 'top',
-        text: 'En zo zit het. De mensen die zich aansloten bij de beweging van Kuyper, kwamen uit het gebied dat we vandaag de Biblebelt noemen. Het ontstaan ervan heeft dus niet zozeer te maken met geloof. Maar met politiek.' },
+        text: 'En zo zit het. De mensen die zich aansloten bij de beweging van Kuyper, kwamen uit het gebied dat we vandaag de Bijbelbelt noemen. Het ontstaan ervan heeft dus niet zozeer te maken met geloof. Maar met politiek.' },
       { pos: 'bottom',
-        text: 'De mensen waren er al, maar de Bijbelbelt nog niet. Pas door Kuypers beweging kregen ze een gezamenlijke identiteit. En pas toen er gestemd moest worden, werd die strook voor het eerst zichtbaar. Die keuze werd vervolgens generatie op generatie doorgegeven.' }
+        text: 'De mensen waren er al, maar hadden als gezamenlijke groep nog geen naam. Pas door Kuypers beweging kregen ze een identiteit. En pas door het stemrecht werd die strook voor het eerst zichtbaar. Die keuze werd vervolgens generatie op generatie doorgegeven.' }
     ]},
 
-  // 17 — Predikanten (1/2)  |  Foto11
-  { type: 'story', year: '1886', bg: 'bg-8', photo: 'Foto11.jpg', credit: 'Wikimedia Commons',
+  // 18 — NIEUW: Waarom west naar oost?
+  // [verklaart de diagonale ligging van de Bijbelbelt]
+  { type: 'story', year: '1886', bg: 'bg-7',
     bubbles: [
       { pos: 'top',
-        text: 'Van Rooden deed uitgebreid onderzoek naar de Biblebelt. Tussen 1625 en 1875 bekeek hij meer dan 25.000 verhuizingen van predikanten. Van welke gemeente kwamen ze? En naar welke gemeente gingen ze? De redenering is simpel: als de Bijbelbelt al eeuwenoud was, zouden orthodoxe predikanten al vroeg naar andere orthodoxe gemeenten trekken.' }
+        text: 'Maar waarom loopt de Bijbelbelt van west naar oost, en niet van noord naar zuid? Kuyper werkte in zijn eigen omgeving: Amsterdam, Utrecht, Urk, Zwijndrecht, Sliedrecht, Zierikzee — niet in Groningen of Limburg.' },
+      { pos: 'bottom',
+        text: 'De mensen trokken niet naar de Bijbelbelt toe — ze woonden er al. Predikanten reisden zelden verder dan 50 kilometer, waardoor de orthodoxe gemeenschap in dat tussengebied bleef. Later versterkte de schoolkeuze die concentratie nog verder.' }
     ]},
 
-  // 18 — Predikanten (2/2)  |  GEEN FOTO
+  // 19 — Predikanten (1/2)
+  // [GEWIJZIGD: "simpel" → "als volgt"; foto predikant verwijderd — vervang door kerkfoto]
+  { type: 'story', year: '1886', bg: 'bg-8',
+    bubbles: [
+      { pos: 'top',
+        text: 'Van Rooden deed uitgebreid onderzoek naar de Bijbelbelt. Tussen 1625 en 1875 bekeek hij meer dan 25.000 verhuizingen van predikanten. Van welke gemeente kwamen ze? En naar welke gemeente gingen ze? De redenering is als volgt: als de Bijbelbelt al eeuwenoud was, zouden orthodoxe predikanten al vroeg naar andere orthodoxe gemeenten trekken.' }
+    ]},
+
+  // 20 — Predikanten (2/2)  |  GEEN FOTO
   { type: 'story', year: '1886', bg: 'bg-8',
     bubbles: [
       { pos: 'mid',
         text: 'Maar dat patroon bleek pas na 1870 te ontstaan, precies op het moment dat het kiesrecht werd ingevoerd. Daarvoor bestond de geografische verdeling gewoon niet. De Bijbelbelt bestond voor de politiek simpelweg nog niet.' }
     ]},
 
-  // 19 — Video 6
+  // 21 — Video 6
   { type: 'video', year: '1886', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/lUpHXvQ7iRk',
     label: 'Van Rooden legt zijn predikantenonderzoek uit: 25.000 verhuizingen tussen 1625 en 1875, en wat dat aantoont over wanneer de Bijbelbelt werkelijk is ontstaan.' },
 
-  // 20 — Patroon niet uniek (1/2)  |  Foto12
+  // 22 — Patroon niet uniek (1/2)  |  Foto12
+  // [GEWIJZIGD: formulering aangescherpt]
   { type: 'story', year: '1890', bg: 'bg-9', photo: 'Foto12.jpg', credit: 'Onbekend',
     bubbles: [
       { pos: 'top',
-        text: 'Wat er in Nederland gebeurde is geen uitzondering. Een politieke keuze kan generaties lang vastleggen waar er op gestemd wordt. Historici hebben dat vaker aangetoond. Het bekendste voorbeeld komt uit Frankrijk.' }
+        text: 'Wat er in Nederland gebeurde is geen uitzondering. Een politieke keuze zet zich voort in het stemgedrag van generaties. Historici hebben dat vaker aangetoond. Het bekendste voorbeeld komt uit Frankrijk.' }
     ]},
 
-  // 21 — Patroon niet uniek (2/2)  |  Foto13
+  // 23 — Patroon niet uniek (2/2)  |  Foto13
   { type: 'story', year: '1890', bg: 'bg-9', photo: 'Foto13.jpg', credit: 'Wikimedia Commons',
     bubbles: [
       { pos: 'mid',
         text: 'In 1791 stemde heel Frankrijk over de vraag of de overheid de kerk mocht reorganiseren. Die kaart valt bijna exact samen met de presidentsverkiezingen van Mitterrand in 1981, tweehonderd jaar later. Een stemming, anderhalve eeuw effect. Precies wat we in Nederland ook zien.' }
     ]},
 
-  // 22 — Video 7
+  // 24 — Video 7
   { type: 'video', year: '1890', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/oboLBR3PU5E',
     label: 'Van Rooden over het Franse voorbeeld uit 1791: hoe een vroege stemming tweehonderd jaar later nog steeds zichtbaar was op de politieke kaart, en waarom dat geen toeval is.' },
 
-  // 23 — Ontkerkelijking  |  Foto14
+  // 25 — Ontkerkelijking  |  Foto14
   { type: 'story', year: '1960', bg: 'bg-10', photo: 'Foto14.jpg', credit: 'Dietmar Rabich',
     bubbles: [
       { pos: 'top',
         text: 'Het geloof speelt geen dominante rol meer in de Nederlandse samenleving. Sinds de jaren zestig liepen kerken in hoog tempo leeg. Ook de Bijbelbelt ontkwam daar niet aan. Maar hij verdween niet.' },
       { pos: 'bottom',
-        text: 'Van Rooden ziet juist dat de Biblebelt hedendaags alleen nog maar verder concentreert en versterkt.' }
+        text: 'Van Rooden ziet juist dat de Bijbelbelt hedendaags alleen nog maar verder concentreert en versterkt.' }
     ]},
 
-  // 24 — Video 8
+  // 26 — Video 8
   { type: 'video', year: '2000', bg: 'bg-video',
     src: 'https://www.youtube.com/embed/kqmSt4Fw8ww',
     label: 'Van Rooden vertelt hoe ontkerkelijking de Bijbelbelt niet deed verdwijnen, maar er juist voor zorgde dat hij verder concentreerde. Onderwijs speelde hierbij een grote rol.' },
 
-  // 25 — EN NU sectie-intro
+  // 27 — EN NU sectie-intro
   { type: 'section', year: '2000', bg: 'bg-ennu',
     eyebrow: 'En nu?',
     title: 'De Bijbelbelt zichtbaar in stemgedrag',
     text: 'Aan de hand van het stemgedrag op de SGP is precies te zien hoe een politieke keuze zich voor tientallen jaren vastlegt. Van 1961 tot 2025 is de Bijbelbelt steeds herkenbaar, en steeds geconcentreerder.' },
 
-  // 26 — Kaart 1961  |  Foto15
+  // 28 — Kaart 1961  |  Foto15
+  // [GEWIJZIGD: CU-vermelding verwijderd]
   { type: 'map', year: '1961', src: 'Foto/Foto15.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
-    caption: 'Rond 1961 is het nog voornamelijk de CU die stemmen binnenhaalt. De vorm van de Bijbelbelt is al enigszins terug te zien in de uitslag van het aantal stemmen op de SGP per gemeente.' },
+    caption: 'In 1961 haalt de SGP al stemmen in de Bijbelbelt. De diagonale strook is al lichtelijk zichtbaar in het stemgedrag per gemeente.' },
 
-  // 27 — Kaart 1998  |  Foto16
+  // 29 — Kaart 1998  |  Foto16
   { type: 'map', year: '1998', src: 'Foto/Foto16.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'In 1998 haalt de SGP veel stemmen in de Bijbelbelt. De diagonale strook van Zeeland tot de Veluwe wordt goed zichtbaar in het stemgedrag.' },
 
-  // 28 — Kaart 2010  |  Foto17
+  // 30 — Kaart 2010  |  Foto17
+  // [GEWIJZIGD: "kan jarenlang worden vastgelegd" → "zet zich voort in het stemgedrag van generaties"]
   { type: 'map', year: '2010', src: 'Foto/Foto17.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
-    caption: 'Het aantal stemmen voor de SGP blijft de daaropvolgende jaren vrijwel hetzelfde. Het laat zien wat Van Rooden vertelde: een politieke beslissing kan jarenlang worden vastgelegd.' },
+    caption: 'Het aantal stemmen voor de SGP blijft de daaropvolgende jaren vrijwel hetzelfde. Het laat zien wat Van Rooden vertelde: een politieke keuze zet zich voort in het stemgedrag van generaties.' },
 
-  // 29 — Kaart 2017  |  Foto18
+  // 31 — Kaart 2017  |  Foto18
   { type: 'map', year: '2017', src: 'Foto/Foto18.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
     caption: '' },
 
-  // 30 — Kaart 2021  |  Foto19
+  // 32 — Kaart 2021  |  Foto19
   { type: 'map', year: '2021', src: 'Foto/Foto19.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
     caption: '' },
 
-  // 31 — Kaart 2025  |  Foto20
+  // 33 — Kaart 2025  |  Foto20
   { type: 'map', year: '2025', src: 'Foto/Foto20.jpg', credit: 'verkiezinguitslagen.nl',
     label: 'Stemgedrag SGP per gemeente',
     caption: 'Tot op heden is de Bijbelbelt herkenbaar aan zijn stemgedrag. In de toekomst zal deze alleen nog maar verder concentreren.' },
 
-  // 32 — Einde / bronnen
+  // 34 — Einde / bronnen
   { type: 'end', year: '' }
 ];
 
@@ -1041,7 +1070,7 @@ function buildCard(s, index) {
           ${s.bubbles.map(b => `
             <div class="bubble bubble-${b.pos}">${b.text}</div>
           `).join('')}
-          ${s.credit ? `<div class="photo-credit">© ${s.credit}</div>` : ''}
+          ${s.credit ? `<div class="photo-credit">&copy; ${s.credit}</div>` : ''}
         </div>`;
       inner.querySelectorAll('.bubble').forEach(b => {
         b.dataset.fullText = b.textContent.trim();
@@ -1068,9 +1097,9 @@ function buildCard(s, index) {
       inner.innerHTML = `
         <div class="c-map">
           <div class="map-img-wrap">
-            <img src="${s.src}" alt="SGP stemgedrag ${s.year}" loading="lazy">
-            <div class="map-year">${s.year}</div>
-            ${s.credit ? `<div class="photo-credit">© ${s.credit}</div>` : ''}
+            <img src="${s.src}" alt="${s.label} ${s.year}" loading="lazy">
+            ${s.year ? `<div class="map-year">${s.year}</div>` : ''}
+            ${s.credit ? `<div class="photo-credit">&copy; ${s.credit}</div>` : ''}
           </div>
           <div class="map-caption">
             <div class="map-caption-label">${s.label}</div>
@@ -1120,7 +1149,7 @@ function buildCard(s, index) {
               <li><a href="https://historiek.net/biblebelt-bevindelijk-gereformeerden/92425/" target="_blank">Historiek.net — Biblebelt en bevindelijk gereformeerden</a></li>
             </ul>
           </div>
-          <div class="end-thank">De Bijbelbelt · 2026</div>
+          <div class="end-thank">De Bijbelbelt &middot; 2026</div>
         </div>`;
       break;
     }
